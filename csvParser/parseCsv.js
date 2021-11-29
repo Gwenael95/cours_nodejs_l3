@@ -5,6 +5,7 @@ const fs = require("fs")
 
 const args = process.argv.slice(2)
 const csvFilename = args[0]
+let csvContent = []
 
 function isCsvFile(filename){
 	return filename.match(/(.)+.csv/) !==null 
@@ -22,21 +23,30 @@ function readFile(path, options={}){
 
 async function readCsv(filename){
 	let data
-	let content = []
 	try{
 	 	data = await readFile(filename, {encoding: "utf-8"})
 	 	console.log(data)
-	 	let rows = data.split("\r\n")
-	 	rows.forEach(row=>{
-	 		cols = row.split(";")
-	 		content.push(cols)
-	 	})
+	 	
+	 	let csvContent = parseCsv(data)
+	 	console.log(csvContent)
 
-	 	console.log(content)
 	}catch(err){
 		console.error(err)
 	}
 	return data
+}
+
+function parseCsv(dataString){ // #4.4
+	let content = []
+	let rows = dataString.split("\r\n")
+ 	rows.forEach(row=>{
+ 		if(row.length>0){
+	 		cols = row.split(";")
+	 		content.push(cols)
+	 	}
+ 	})
+
+ 	return content
 }
 
 
@@ -44,6 +54,6 @@ console.log(csvFilename) //#4.1
 console.log(isCsvFile(csvFilename)) //#4.2
 
 
-const csvContent = readCsv(csvFilename) //#4.3
+readCsv(csvFilename) //#4.3
 
 
