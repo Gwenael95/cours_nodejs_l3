@@ -47,3 +47,7 @@ const play1 = launchMachine();
 console.log(play1.result + "\n" + (play1.win? "you win" : "you loose"))
 
 
+const nbTotalSymbol = 8
+const nbTirage = 3
+const proba = 1/Math.pow(nbTotalSymbol, (nbTirage-1))*100
+console.log("Avec 8 symboles, quelle chance (sur 100) avons-nous d’avoir 3 fois le même= " + proba + "%")
