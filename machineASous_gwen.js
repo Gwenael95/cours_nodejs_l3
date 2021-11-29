@@ -4,11 +4,20 @@ const icons = ["♠", "♥", "♦", "♣"]
 const sep = "|"
 
 
+/**
+ * Check if the player win, by checking if all icons are same in the array
+ * @param arr {array} array containing icons randomly generated
+ * @return {Boolean}
+ **/
 function isPlayerWin(arr) {
-    arr.sort();
-    return arr[0] == arr[arr.length -1]
+	arr.sort();
+	return arr[0] == arr[arr.length -1]
 }
 
+/**
+ * return a random icon
+ * @return {String}
+ **/
 function randomIco(){
 	return icons[crypto.randomInt(0, icons.length )]
 }
@@ -16,6 +25,10 @@ function randomIco(){
 
 //console.log(sep + randomIco() + sep + randomIco() + sep + randomIco() + sep)
 
+/**
+ * launch a slot machineGame
+ * @return {Object} the result displayed on the machine as a string (key : result), and a boolean if player win (key : win)
+ **/
 function launchMachine(){
 	let result = "";
 	let allIco = []
