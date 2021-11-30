@@ -3,6 +3,7 @@
  * @param req
  * @param res
  */
+import {createTodo} from "./todos.services.js";
 
 export function getAllTodosController(req, res){
 
@@ -14,8 +15,9 @@ export function getOneTodosController(req, res){
     })
 }
 
-export function postTodosController(req, res){
-
+export async function postTodosController(req, res){
+    const todo = await createTodo(req.body.name, req.body.items)
+    res.json(todo)
 }
 
 export function patchTodosController(req, res){

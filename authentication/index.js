@@ -14,32 +14,45 @@ import http from "http"
 import config from "./config.js"
 import apiRouter from "./router.js"
 import nunjucks from "nunjucks"
+import { startMongoose } from "./db/mongo.js"
 
-const app = express()
-const server = http.createServer(app)
+startMongoose()
+	.then(()=>{
+		console.log("Connected to DB")
+		startWebServer()
+	})
+	.catch((err)=>{
+		console.error(err)
+	})
 
-// here all we need to have html template like twig. use render in controller
-nunjucks.configure("views", {
-	autoescape : true,
-	escape : app,
-})
+function startWebServer() {
 
-app.use((req, res, next)=>{
-	console.log(req.url)
-	next()
-})
+	const app = express()
+	const server = http.createServer(app)
 
-//necessary to enable files in public directory
-app.use(express.static("public"))
+	// here all we need to have html template like twig. use render in controller
+	nunjucks.configure("views", {
+		autoescape: true,
+		escape: app,
+	})
 
-//parse req body as Object, available in req.body
-app.use(express.json())
-app.use(express.urlencoded( { extended:true } ))
+	app.use((req, res, next) => {
+		console.log(req.url)
+		next()
+	})
 
-//app.use(router)
-app.use("/api", apiRouter)
+	//necessary to enable files in public directory
+	app.use(express.static("public"))
+
+	//parse req body as Object, available in req.body
+	app.use(express.json())
+	app.use(express.urlencoded({extended: true}))
+
+	//app.use(router)
+	app.use("/api", apiRouter)
 
 
-server.listen(config.PORT,config.HOST, ()=>{
-	console.log("listening on http://" + config.HOST + ":" + config.PORT )
-})
+	server.listen(config.PORT, config.HOST, () => {
+		console.log("listening on http://" + config.HOST + ":" + config.PORT)
+	})
+}
