@@ -12,6 +12,7 @@ let csvContent = []
 
 /**
  * Return the value as float, even with number containing spaces (ex : '10 000' => 10000)
+ * @return {Number}
  * */
 function parsingToFloat(str){
     return parseFloat(str.toString().replace(/\s/g,''))
@@ -19,6 +20,8 @@ function parsingToFloat(str){
 
 /**
  * Check if the file is a CSV
+ * @param filename {String} : file's name
+ * @return {Boolean}
  * */
 function isCsvFile(filename){
 	return filename.match(/(.)+.csv/) !==null 
@@ -44,6 +47,7 @@ function writeFile(filename, content){
  * Read a file and return a promise
  * @param path {String} : filepath of the file to read
  * @param options {Object} : object
+ * @return {Promise}
  * */
 function readFile(path, options={}){
 	return new Promise((resolve,reject) =>{
@@ -59,7 +63,7 @@ function readFile(path, options={}){
 /**
  * Read a csv and parse it as an array of array
  * @param filename {String} : name of the file to read and parse
- * @return data
+ * @return {Promise}
  * */
 async function readCsv(filename){
 	let data
@@ -174,9 +178,9 @@ function extractColAsArray(csvContent, col, type){
 }
 
 /**
- * Read a csv using csv-parser lib 
+ * Read a csv using csv-parser lib, and write a stat file format '.txt'.
  * */
-async function readCsvWithLib(){
+async function readCsvWithLibAndSaveStatsFile(){
 	fs.createReadStream(csvFilename)
 	  	.pipe(csv({ separator: ';' }))
 	  	.on('data', (data) => csvLibContent.push(data))
@@ -189,7 +193,7 @@ async function readCsvWithLib(){
 		let notesJsArray = extractColAsArray(csvLibContent, COL_NOTES_JS, TYPE.float)
 		const extentJs = ss.extent(notesJsArray)
 		const varianceJs = ss.variance(notesJsArray)
-		const mean = ss.mean(notesJsArray)		//regurn average
+		const mean = ss.mean(notesJsArray)		
 		//endregion
 
 		writeFile(statFilename, "own average js notes = " + averageJs + "\n" 
@@ -201,7 +205,7 @@ async function readCsvWithLib(){
 
 
 
-readCsvWithLib()
+readCsvWithLibAndSaveStatsFile()
 
 
 

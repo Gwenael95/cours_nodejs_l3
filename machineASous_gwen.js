@@ -48,4 +48,4 @@ console.log(play1.result + "\n" + (play1.win? "you win" : "you loose"))
 
 
 const proba = 1/Math.pow(icons.length, (nbIcoDisplayed-1))*100
-console.log("Avec 8 symboles, quelle chance (sur 100) avons-nous d’avoir 3 fois le même= " + proba + "%")
+console.log("Avec " + icons.length + " symboles, quelle chance (sur 100) avons-nous d’avoir " + nbIcoDisplayed + " fois le même = " + proba + "%")
