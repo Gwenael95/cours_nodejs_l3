@@ -1,7 +1,7 @@
 export function homeController(req, res){
 	console.log(req.query)
-	res.json({
-		success:true,
+	res.render("home.html", {
+		title : "Home",
 	})
 }
 

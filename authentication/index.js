@@ -13,15 +13,24 @@ import express from "express" // without type:module => const express = require(
 import http from "http"
 import config from "./config.js"
 import apiRouter from "./router.js"
+import nunjucks from "nunjucks"
 
 const app = express()
 const server = http.createServer(app)
 
+// here all we need to have html template like twig. use render in controller
+nunjucks.configure("views", {
+	autoescape : true,
+	escape : app,
+})
 
 app.use((req, res, next)=>{
 	console.log(req.url)
 	next()
 })
+
+//necessary to enable files in public directory
+app.use(express.static("public"))
 
 //parse req body as Object, available in req.body
 app.use(express.json())
