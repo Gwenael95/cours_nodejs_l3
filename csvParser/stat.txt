@@ -1,0 +1,4 @@
+own average js notes = 13.571428571428571
+extent js notes = 7,18
+variance js notes = 11.387755102040815
+mean js notes = 13.571428571428571
