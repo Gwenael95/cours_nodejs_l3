@@ -8,7 +8,21 @@ export function homeController(req, res){
 export function signInController(req, res){
 	console.log(req.query)
 	res.render("signIn.html", {
-		title : "SignIn",
+		title : "S'inscrire",
+	})
+}
+export function resetPasswordController(req, res){
+	console.log(req.query)
+	res.render("resetPassword.html", {
+		title : "Réinitialiser son mot de passe",
+		mail: req.query.mail
+	})
+}
+
+export function logInController(req, res){
+	console.log(req.query)
+	res.render("login.html", {
+		title : "Se connecter",
 	})
 }
 

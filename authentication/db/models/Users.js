@@ -5,7 +5,8 @@ import uniqueValidator from "mongoose-unique-validator";
 const schema = new mongoose.Schema({
     pseudo: {type : String, unique:true},
     password: {type : String},
-    mail :{type: String, unique:true, match: /.+@.+\..+/,}
+    mail :{type: String, unique:true, match: /.+@.+\..+/,},
+    role :{type: String, default: "user"}  // role = [user/admin]
     /* options timestamps will had "created at" and "updatedAt"*/
 },{
     timestamps:true,

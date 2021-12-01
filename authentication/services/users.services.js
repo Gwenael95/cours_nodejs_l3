@@ -21,5 +21,45 @@ export async function createUser(pseudo, password, mail) {
     }
 }
 
-//@todo to get, passwordHash.verify(data.password, hashedPassword)
-// @todo delete, update function
+export async function authUser(password, mail) {
+    try {
+        const user = await User.findOne({
+            mail
+        }).exec()
+        if (passwordHash.verify(password, user.password)) {
+            return user;
+        } else {
+            return {errors: "Cet utilisateur n'existe pas"};
+        }
+    }catch(err){
+        return err
+    }
+}
+
+export async function getUser(mail) {
+    try {
+        const user = await User.findOne({
+            mail
+        }).exec()
+        return user;
+    }catch(err){
+        return err
+    }
+}
+
+export async function resetUserPassword(password, mail) {
+    try {
+        const hashedPassword = passwordHash.generate(password);
+
+        const user = await User.findOneAndUpdate({
+            mail
+        }, { password: hashedPassword}).exec()
+        return user;
+    }catch(err){
+        return err
+    }
+}
+
+
+
+// @todo delete
