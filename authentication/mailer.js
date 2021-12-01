@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer" ;
 
 // async..await is not allowed in global scope, must use a wrapper
-export async function sendMail(mail) {
+export async function sendMailForgotPassword(mail) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     let testAccount = await nodemailer.createTestAccount();
@@ -22,7 +22,9 @@ export async function sendMail(mail) {
         from: '"Fred Foo 👻" <foo@example.com>', // sender address
         to: mail, // list of receivers
         subject: "Mot de passe oublié ✔", // Subject line
-        html: "<b>Voici un lien pour récuperer votre mot de passe.</b>", // html body
+        html: "<b>Voici un lien pour récuperer votre mot de passe." +
+            "<a href='http://127.0.0.1:8088/resetPassword?mail=" + mail + "'>Cliquez ici.</a>" +
+            "</b>", // html body
     });
 
     console.log("Message sent: %s", info.messageId);

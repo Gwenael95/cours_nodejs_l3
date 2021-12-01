@@ -1,6 +1,6 @@
 import {checkPostUsers, checkLoginUser, checkPasswordUser} from "../validator.js";
-import {createUser, authUser, getUser} from "../services/users.services.js";
-import {sendMail} from "../mailer.js";
+import {createUser, authUser, getUser, resetUserPassword} from "../services/users.services.js";
+import {sendMailForgotPassword} from "../mailer.js";
 
 export async function authUserController(req, res){
     const body = req.body
@@ -23,7 +23,19 @@ export async function getUserAndSendMail(req, res){
         }) // bad request
     }
     const user = await getUser(body.mail)
-    sendMail(user.mail).catch(console.error);
+    sendMailForgotPassword(user.mail).catch(console.error);
+    res.json(user)
+}
+
+export async function getUserAndResetPassword(req, res){
+    const body = req.body
+    const check = checkLoginUser(body)
+    if(check !== true){
+        return res.status(400).json({
+            error : check
+        }) // bad request
+    }
+    const user = await resetUserPassword(body.password, body.mail)
     res.json(user)
 }
 
