@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer" ;
+import config from "./config.js";
+
 
 // async..await is not allowed in global scope, must use a wrapper
 export async function sendMailForgotPassword(mail) {
@@ -19,11 +21,11 @@ export async function sendMailForgotPassword(mail) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: '<l3.cergy@edu.itescia.fr>', // sender address
         to: mail, // list of receivers
         subject: "Mot de passe oublié ✔", // Subject line
         html: "<b>Voici un lien pour récuperer votre mot de passe." +
-            "<a href='http://127.0.0.1:8088/resetPassword?mail=" + mail + "'>Cliquez ici.</a>" +
+            "<a href='http://" + config.HOST + ":" + config.PORT + "/resetPassword?mail=" + mail + "'>Cliquez ici.</a>" +
             "</b>", // html body
     });
 

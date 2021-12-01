@@ -11,6 +11,12 @@ export function signInController(req, res){
 		title : "S'inscrire",
 	})
 }
+export function forgotPasswordController(req, res){
+	console.log(req.query)
+	res.render("forgotPassword.html", {
+		title : "Mot de passe oublié"
+	})
+}
 export function resetPasswordController(req, res){
 	console.log(req.query)
 	res.render("resetPassword.html", {
