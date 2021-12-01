@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Auth Group Marika, Maxime, Railas, Gwenael</title>
+    <title>Test Group Marika, Maxime, Railas, Gwenael</title>
 </head>
 <body>
-
+    <h1>Test</h1>
+    <script src="/socket.io/socket.io.js"> </script>
+    <script>
+        const socket = io()
+        socket.on("connect", ()=>{
+            console.log("Connected to server")
+        })
+    </script>
 </body>
 </html>

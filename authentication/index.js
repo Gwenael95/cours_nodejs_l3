@@ -15,6 +15,8 @@ import config from "./config.js"
 import apiRouter from "./router.js"
 import nunjucks from "nunjucks"
 import { startMongoose } from "./db/mongo.js"
+import { Server as SioServer } from "socket.io"
+
 
 startMongoose()
 	.then(()=>{
@@ -29,6 +31,11 @@ function startWebServer() {
 
 	const app = express()
 	const server = http.createServer(app)
+	const io = new SioServer(server)
+
+	io.on("connection", (socket)=>{
+		console.log("io client Connected. id = " + socket.id)
+	})
 
 	// here all we need to have html template like twig. use render in controller
 	nunjucks.configure("views", {
