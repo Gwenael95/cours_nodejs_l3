@@ -1,8 +1,7 @@
 import {checkPostUsers, checkLoginUser, checkPasswordUser} from "../validator.js";
 import {createUser, authUser, getUser, resetUserPassword} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
-import jwt from "jsonwebtoken";
-import config from "../config.js";
+import {createWebToken} from "../src/webtoken.js"
 
 
 export async function authUserController(req, res){
@@ -21,17 +20,9 @@ export async function authUserController(req, res){
         })
     }
 
-    const expireIn = 24 * 60 * 60; // 24H
-    const token    = jwt.sign({
-            user: user
-        },
-        config.SECRET_KEY,
-        {
-            expiresIn: expireIn
-        });
-
-    console.log(token)
-    res.header('Authorization', 'Bearer ' + token);
+    const tokenData = createWebToken(user)
+    res.header('Authorization', 'Bearer ' + tokenData.token);
+    res.cookie('authcookie', tokenData.token, {maxAge:tokenData.expireIn, httpOnly:false}) //cookie parser
 
     return res.status(200).json(user);
 }
