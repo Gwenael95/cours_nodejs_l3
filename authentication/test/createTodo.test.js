@@ -10,7 +10,7 @@ axios.defaults.validateStatus = function validateStatus(status){
 describe('User API', function () {
     describe('POST /user', function () {
         it("should create new user and return it", async function (){
-            const result = await axios.post("/api/user", {
+            const result = await axios.post("/user", {
                 pseudo: "gwen",
                 mail: "gwenael.mw@gmail.com",
                 password: "monPass1"
@@ -22,7 +22,7 @@ describe('User API', function () {
     });
 });
 
-axios.post("/api/user", {
+axios.post("/user", {
     pseudo: "gwen",
     mail: "gwenael.mw@gmail.com",
     password: "monPass1"

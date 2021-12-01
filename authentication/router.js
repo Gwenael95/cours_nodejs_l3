@@ -27,9 +27,7 @@ const router= express.Router()
 router.post("/login", limiter, (req, res)=>{
 })
 router.get("/signin", limiter, signInController)
-router.get("/", function (req, res){
-	res.render("signIn.html")
-})
+
 router.get("/home", homeController)
 router.post("/form", mw_test, formController)
 

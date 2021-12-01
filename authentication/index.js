@@ -45,7 +45,7 @@ function startWebServer() {
 	// here all we need to have html template like twig. use render in controller
 	nunjucks.configure("views", {
 		autoescape: true,
-		escape: app,
+		express: app,
 	})
 
 	app.use(limiter)

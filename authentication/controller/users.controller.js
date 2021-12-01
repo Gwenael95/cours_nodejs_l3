@@ -13,13 +13,14 @@ export function getOneUserController(req, res){
 }
 
 export async function postUserController(req, res){
-    const check = checkPostUsers(req.body)
-    if(check !== true){
+    const body = req.body
+    const check = checkPostUsers(body)
+    if(check !== true || body.password !== body.confirmPassword){
         return res.status(400).json({
             error : check
         }) // bad request
     }
-    const user = await createUser(req.body.pseudo, req.body.password, req.body.mail)
+    const user = await createUser(body.pseudo, body.password, body.mail)
     res.json(user)
 }
 
