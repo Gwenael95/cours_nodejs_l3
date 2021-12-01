@@ -1,6 +1,9 @@
 import {checkPostUsers, checkLoginUser, checkPasswordUser} from "../validator.js";
 import {createUser, authUser, getUser, resetUserPassword} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
+import jwt from "jsonwebtoken";
+import config from "../config.js";
+
 
 export async function authUserController(req, res){
     const body = req.body
@@ -11,7 +14,26 @@ export async function authUserController(req, res){
         }) // bad request
     }
     const user = await authUser( body.password, body.mail)
-    res.json(user)
+
+    if(user.errors){
+        return res.status(400).json({
+            errors: "Les données fournis ne permette pas d'identifier l'utilisateur"
+        })
+    }
+
+    const expireIn = 24 * 60 * 60; // 24H
+    const token    = jwt.sign({
+            user: user
+        },
+        config.SECRET_KEY,
+        {
+            expiresIn: expireIn
+        });
+
+    console.log(token)
+    res.header('Authorization', 'Bearer ' + token);
+
+    return res.status(200).json(user);
 }
 
 export async function getUserAndSendMail(req, res){

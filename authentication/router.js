@@ -3,7 +3,9 @@ import { homeController,
 	formController,
 	signInController,
 	logInController,
-	resetPasswordController} from './controller.js'
+	resetPasswordController,
+	forgotPasswordController
+} from './controller.js'
 import {
 	deleteUserController,
 	getAllUsersController,
@@ -16,7 +18,7 @@ import {
 	getUserAndResetPassword
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
-
+import {checkJWT} from "./middlewares/security.js"
 
 // limit nb of request from a user
 const limiter = rateLimit({
@@ -33,15 +35,17 @@ const router= express.Router()
 
 router.get("/login", limiter, logInController)
 router.get("/signin", limiter, signInController)
+router.get("/forgotPassword", limiter, forgotPasswordController)
 router.get("/resetPassword", limiter, resetPasswordController)
 
-router.get("/home", homeController)
+router.get("/home", checkJWT,  homeController)
 router.post("/form", mw_test, formController)
 
 
 router.post("/user/auth", authUserController)
-router.post("/user/forgotPassword", getUserAndSendMail)
+router.post("/user/forgotPassword", getUserAndSendMail) //@todo use jwt to avoid abusive usage
 router.patch("/user/resetPassword", getUserAndResetPassword)
+
 router.get("/user", getAllUsersController)
 router.get("/user/:id", getOneUserController) // to get only one element
 router.post("/user", postUserController)

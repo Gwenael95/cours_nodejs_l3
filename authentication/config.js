@@ -6,4 +6,6 @@ export default {
 	PORT : process.env.PORT || 8088,
 	//localhost:27017 = Host mongodb   ; node_test = mongoDb data base
 	MONGO_URI : process.env.MONGO_URI || "mongodb://localhost:27017/node_test" || "mongodb:user:pass@//localhost:27017/node_test",
+	SECRET_KEY : process.env.SECRET_KEY || "CI6IkpXVCJ9FDSFD756" ,
+
 }
