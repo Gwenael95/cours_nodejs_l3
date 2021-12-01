@@ -12,32 +12,88 @@
                 .flexCenter{
                     display: flex; justify-content: center; align-items: center
                 }
+                .flexBetween{
+                    display: flex; justify-content: space-between; align-items: center
+                }
+                .flexColumn{
+                    flex-direction: column !important;
+                }
+                .form >*{
+                    width: 50%;
+                }
             </style>
-            <form class="flexCenter">
-                <div class="flexCenter">
+
+            <div style="height: 30px;" id="notification">
+
+            </div>
+            <form class="flexCenter flexColumn form">
+                <div class="flexBetween">
                     <input type="text" name="pseudo" id="pseudo" placeholder="pseudo" required>
                     <label for="pseudo">pseudo</label>
                 </div>
-                <div class="flexCenter">
+                <div class="flexBetween">
                     <input type="email" name="email" id="email"  placeholder="mail" required>
                     <label for="email">mail</label>
                 </div>
-                <div class="flexCenter">
+                <div class="flexBetween">
                     <input type="password" name="password" id="password" required>
                     <label for="password">mot de passe</label>
                 </div>
-                <div class="flexCenter">
+                <div class="flexBetween">
                     <input type="password" name="confirmPassword" id="confirmPassword" required>
                     <label for="confirmPassword">confirmez votre mot de passe</label>
                 </div>
-                <input type="submit">
+                <input type="button" id="submitButton">
             </form>
         </main>
         <footer></footer>
 
 
         <script>
+            let submitButton = document.getElementById("submitButton")
+            submitButton.onclick = function (){
+                signin()
+            }
+            /**
+             * @param promise : Promise<Response> :
+             */
+            function handleFetchLogJson(promise){
+                return promise
+                    .then(response => response.json())
+                    .then(response =>{
+                        console.log(response);
+                        return response})
+                    .catch(e=>console.error(e));
+            }
 
+            function getData(inputId){
+                return document.getElementById(inputId).value
+            }
+
+            async function signin(){
+                if (getData("password") === getData("confirmPassword")){
+                    const body = JSON.stringify({
+                        pseudo: getData("pseudo"),
+                        mail: getData("email"),
+                        password: getData("password"),
+                        confirmPassword: getData("confirmPassword")
+                    })
+                    const res = await handleFetchLogJson(fetch( '/user', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body
+                    }));
+                    document.getElementById("notification").textContent = "Inscription réussi"
+                    //@todo redirection
+                    return res
+                }
+                else{
+                    document.getElementById("notification").textContent = "les mots de passes ne sont pas identique"
+                }
+
+            }
         </script>
     </body>
 </html>
