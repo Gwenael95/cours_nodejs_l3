@@ -7,7 +7,8 @@ import {
 	patchUserController,
 	postUserController,
 	putUserController,
-	authUserController
+	authUserController,
+	getUserAndSendMail
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
 
@@ -33,6 +34,7 @@ router.post("/form", mw_test, formController)
 
 
 router.post("/user/auth", authUserController)
+router.post("/user/forgotPassword", getUserAndSendMail)
 router.get("/user", getAllUsersController)
 router.get("/user/:id", getOneUserController) // to get only one element
 router.post("/user", postUserController)
