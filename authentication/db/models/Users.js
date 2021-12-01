@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import uniqueValidator from "mongoose-unique-validator";
 
 //@todo validator for unique mail and pseudo (unique:true isn't a validator)
 const schema = new mongoose.Schema({
@@ -10,6 +11,8 @@ const schema = new mongoose.Schema({
     timestamps:true,
     minimize:false,
 })
+
+schema.plugin(uniqueValidator);
 
 const User = mongoose.model("User", schema)
 

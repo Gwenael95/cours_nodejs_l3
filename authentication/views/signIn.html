@@ -85,9 +85,18 @@
                         },
                         body
                     }));
-                    document.getElementById("notification").textContent = "Inscription réussi"
-                    //@todo redirection
-                    return res
+                    if(res.errors) {
+                        if (res.errors.mail && res.errors.mail.kind === "regexp") {
+                            document.getElementById("notification").textContent = "Inscription impossible, le mail n'est pas dans un format correct"
+                        } else {
+                            const errorReason = Object.keys(res.errors)
+                            document.getElementById("notification").textContent = "Inscription impossible, " + errorReason.join(" et ") + " déjà utilisé" + (errorReason.length > 1 ? "s" : "")
+                        }
+                    }
+                    else{
+                        document.getElementById("notification").textContent = "Inscription réussi"
+                        //@todo redirection
+                    }
                 }
                 else{
                     document.getElementById("notification").textContent = "les mots de passes ne sont pas identique"

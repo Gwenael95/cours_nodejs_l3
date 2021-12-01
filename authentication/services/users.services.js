@@ -11,10 +11,14 @@ import passwordHash from "password-hash";
 export async function createUser(pseudo, password, mail) {
     const hashedPassword = passwordHash.generate(password);
 
-    const user = await User.create({
-        pseudo, password: hashedPassword, mail
-    })
-    return user
+    try {
+        const user = await User.create({
+            pseudo, password: hashedPassword, mail
+        })
+        return user
+    }catch(err){
+        return err
+    }
 }
 
 //@todo to get, passwordHash.verify(data.password, hashedPassword)
