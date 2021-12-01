@@ -16,7 +16,12 @@ import apiRouter from "./router.js"
 import nunjucks from "nunjucks"
 import { startMongoose } from "./db/mongo.js"
 import { Server as SioServer } from "socket.io"
+import rateLimit from "express-rate-limit"
 
+const limiter = rateLimit({
+	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
+	max: 50
+})
 
 startMongoose()
 	.then(()=>{
@@ -42,6 +47,8 @@ function startWebServer() {
 		autoescape: true,
 		escape: app,
 	})
+
+	app.use(limiter)
 
 	app.use((req, res, next) => {
 		console.log(req.url)

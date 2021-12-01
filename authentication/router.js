@@ -8,6 +8,12 @@ import {
 	postTodosController,
 	putTodosController
 } from "./todos.controller.js";
+import rateLimit from "express-rate-limit"
+
+const limiter = rateLimit({
+	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
+	max: 50
+})
 
 const mw_test = (req, res, next) => {
 	console.log("")
@@ -15,6 +21,10 @@ const mw_test = (req, res, next) => {
 }
 
 const router= express.Router()
+
+router.post("/login", limiter, (req, res)=>{
+
+})
 
 router.get("/home", homeController)
 router.post("/form", mw_test, formController)
