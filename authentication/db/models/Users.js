@@ -1,14 +1,15 @@
 import mongoose from "mongoose"
 
 const schema = new mongoose.Schema({
-    name: {type : String, default : ""},
-    items: {type : [String]},
+    pseudo: {type : String},
+    password: {type : String},
+    mail :{type: String}
     /* options timestamps will had "created at" and "updatedAt"*/
 },{
     timestamps:true,
     minimize:false,
 })
 
-const Todo = mongoose.model("Todo", schema)
+const User = mongoose.model("User", schema)
 
-export default Todo 
+export default User

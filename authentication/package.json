@@ -21,6 +21,7 @@
     "mongodb": "^4.2.0",
     "mongoose": "^6.0.14",
     "nunjucks": "^3.2.3",
+    "password-hash": "^1.2.2",
     "socket.io": "^4.4.0"
   },
   "devDependencies": {

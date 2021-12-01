@@ -5,6 +5,13 @@ export function homeController(req, res){
 	})
 }
 
+export function signInController(req, res){
+	console.log(req.query)
+	res.render("signIn.html", {
+		title : "SignIn",
+	})
+}
+
 export function formController(req, res){
 	console.log(req.body)
 	res.json({

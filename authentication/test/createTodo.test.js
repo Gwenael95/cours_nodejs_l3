@@ -7,32 +7,25 @@ axios.defaults.validateStatus = function validateStatus(status){
     return true
 }
 
-describe('Todos API', function () {
-    describe('POST /todos', function () {
-        it("should create new todo and return it", async function (){
-            const result = await axios.post("/api/todos", {
-                name: "First todo",
-                items: []
+describe('User API', function () {
+    describe('POST /user', function () {
+        it("should create new user and return it", async function (){
+            const result = await axios.post("/api/user", {
+                pseudo: "gwen",
+                mail: "gwenael.mw@gmail.com",
+                password: "monPass1"
             })
             assert.equal(200, result.status)
-            assert.deepEqual(["name", "_id", "createdAt", "updatedAt", "items", "__v"].sort(), Object.keys(result.data).sort() )
+            assert.deepEqual(["pseudo", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
         })
 
-        it("should not create new todo and return error", async function (){
-            const result = await axios.post("/api/todos", {
-                name: "",
-                items: []
-            })
-            console.log(result.data)
-            assert.equal(400, result.status)
-            assert.deepEqual(["error"], Object.keys(result.data) )
-        })
     });
 });
 
-axios.post("/api/todos", {
-    name: "First todo",
-    items: []
+axios.post("/api/user", {
+    pseudo: "gwen",
+    mail: "gwenael.mw@gmail.com",
+    password: "monPass1"
 })
 .then(result=>{
     console.log(result.data)

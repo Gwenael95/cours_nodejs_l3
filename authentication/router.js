@@ -1,15 +1,17 @@
 import express from 'express'
-import { homeController, formController } from './controller.js'
+import { homeController, formController, signInController } from './controller.js'
 import {
-	deleteTodosController,
-	getAllTodosController,
-	getOneTodosController,
-	patchTodosController,
-	postTodosController,
-	putTodosController
-} from "./todos.controller.js";
+	deleteUserController,
+	getAllUsersController,
+	getOneUserController,
+	patchUserController,
+	postUserController,
+	putUserController
+} from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
 
+
+// limit nb of request from a user
 const limiter = rateLimit({
 	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
 	max: 50
@@ -23,18 +25,21 @@ const mw_test = (req, res, next) => {
 const router= express.Router()
 
 router.post("/login", limiter, (req, res)=>{
-
 })
-
+router.get("/signin", limiter, signInController)
+router.get("/", function (req, res){
+	res.render("signIn.html")
+})
 router.get("/home", homeController)
 router.post("/form", mw_test, formController)
 
-router.get("/todos", getAllTodosController)
-router.get("/todos/:id", getOneTodosController) // to get only one element
-router.post("/todos", postTodosController)
-router.patch("/todos", patchTodosController) // update partially resources
-router.delete("/todos", deleteTodosController)
-router.put("/todos", putTodosController) // replace resources
+router.get("/user", getAllUsersController)
+router.get("/user/:id", getOneUserController) // to get only one element
+router.post("/user", postUserController)
+router.patch("/user", patchUserController) // update partially resources
+router.delete("/user", deleteUserController)
+router.put("/user", putUserController) // replace resources
+
 
 export default router // module.exports
 

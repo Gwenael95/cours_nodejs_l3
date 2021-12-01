@@ -63,8 +63,8 @@ function startWebServer() {
 	app.use(express.urlencoded({extended: true}))
 
 	//app.use(router)
-	app.use("/api", apiRouter)
-
+	app.use( apiRouter)
+	//	app.use("/api", apiRouter) // only for api call
 
 	server.listen(config.PORT, config.HOST, () => {
 		console.log("listening on http://" + config.HOST + ":" + config.PORT)
