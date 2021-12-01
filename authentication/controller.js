@@ -8,7 +8,13 @@ export function homeController(req, res){
 export function signInController(req, res){
 	console.log(req.query)
 	res.render("signIn.html", {
-		title : "SignIn",
+		title : "S'inscrire",
+	})
+}
+export function logInController(req, res){
+	console.log(req.query)
+	res.render("login.html", {
+		title : "Se connecter",
 	})
 }
 

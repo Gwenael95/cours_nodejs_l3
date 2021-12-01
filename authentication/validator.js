@@ -9,4 +9,10 @@ const schemaPostUser = {
     confirmPassword : { type : "string", min : 4, max : 80 }
 }
 
+const schemaLoginUser = {
+    mail : { type : "string", min : 4, max : 80 },
+    password : { type : "string", min : 4, max : 80 },
+}
+
 export const checkPostUsers = v.compile(schemaPostUser)
+export const checkLoginUser = v.compile(schemaLoginUser)
