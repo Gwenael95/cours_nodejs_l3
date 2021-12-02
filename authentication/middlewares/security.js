@@ -2,7 +2,14 @@ import { checkLoginUser } from "../validator.js";
 import { authUser } from "../services/users.services.js";
 import passwordHash from "password-hash";
 
-
+/**
+ * This function get a user from DB, and check is data to the ones send by user.
+ * If all match, we create a res.locals.user data, used to create jwt token.
+ * @param req
+ * @param res
+ * @param next
+ * @return {Promise<*>}
+ */
 export const passPortLogin = async (req, res, next) => {
     try {
         const body = req.body

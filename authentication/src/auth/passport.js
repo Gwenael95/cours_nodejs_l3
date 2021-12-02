@@ -3,6 +3,11 @@ import passportJWT from 'passport-jwt'
 const JWTStrategy = passportJWT.Strategy
 import config from "../../config.js"
 
+/**
+ * Extract data from the cookies in request header
+ * @param req
+ * @return {null|Strign}
+ */
 const cookieExtractor = req => {
     let jwt = null
 
@@ -13,6 +18,10 @@ const cookieExtractor = req => {
     return jwt
 }
 
+/**
+ * Check if token has expired
+ * @todo : when token expire, redirect to login page
+ */
 passport.use('jwt', new JWTStrategy({
     jwtFromRequest: cookieExtractor,
     secretOrKey: config.JWT_SECRET
@@ -20,7 +29,7 @@ passport.use('jwt', new JWTStrategy({
     const { expiration } = jwtPayload
 
     if (Date.now() > expiration) {
-        done('Unauthorized', false)
+        done('Unauthorized, token expire', false)
     }
 
     done(null, jwtPayload)

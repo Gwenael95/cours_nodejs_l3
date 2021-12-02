@@ -1,7 +1,10 @@
 import mongoose from "mongoose"
 import uniqueValidator from "mongoose-unique-validator";
 
-//@todo validator for unique mail and pseudo (unique:true isn't a validator)
+/**
+ * Mongoose Schema for a user
+ * @type {module:mongoose.Schema<any, Model<any, any, any, any>, any>}
+ */
 const schema = new mongoose.Schema({
     pseudo: {type : String, unique:true},
     password: {type : String},

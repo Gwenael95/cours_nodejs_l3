@@ -62,6 +62,7 @@ export async function hasToken(req, res){
     })
 }
 export function redirectNotAuth(req, res, next){
+    console.log("redirect not auth")
     passport.authenticate('jwt', {
         //successRedirect: '/home',
         failureRedirect: '/login',
@@ -116,12 +117,21 @@ export async function getOneUserController(req, res){
 export async function postUserController(req, res){
     const body = req.body
     const check = checkPostUsers(body)
+    console.log("post user")
+    console.log(body)
+    console.log(check)
+    console.log(config)
     if(check !== true || body.password !== body.confirmPassword){
         return res.status(400).json({
             error : check
         }) // bad request
     }
     const user = await createUser(body.pseudo, body.password, body.mail)
+    if(user.errors){
+        return res.status(500).json({
+            errors : user,
+        }) // bad request
+    }
     res.json(user)
 }
 
