@@ -117,15 +117,43 @@ export async function resetUserPasswordById(password, id) {
             _id:id
         }, { password: hashedPassword})
         delete user.password; // ? delete user._doc.password;
-export function UserDelete(user){
-    return User.findByIdAndDelete(user).exec()
- }
-
         return user;
     }catch(err){
         return err
     }
 }
 
+export function UserDelete(user){
+    return User.findByIdAndDelete(user).exec()
+}
+
+
+export async function updateUserProfile(pseudo, password, mail) {
+    try {
+        const hashedPassword = passwordHash.generate(password);
+        const newEmail = mail;
+        const newPseudo = pseudo;
+        const user = await User.findOneAndUpdate({
+            mail
+        }, { pseudo: newPseudo, password: hashedPassword, mail: newEmail }).exec()
+        return user;
+    }catch(err){
+        return err
+    }
+}
+
+export async function deleteUserProfile(mail, password) {
+    try {
+        const user = await User.findOne({mail}).exec();
+        if (passwordHash.verify(password, user.password )) {
+            user.deleteOne();
+            return user;
+        } else {
+            return {errors: "Une erreur est survenue."};
+        }
+    } catch(err) {
+        return err;
+    }
+}
 
 // @todo delete

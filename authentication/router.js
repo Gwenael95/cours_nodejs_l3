@@ -2,6 +2,7 @@ import express from "express"
 import { homeController,
 	signInController,
 	logInController,
+	updateProfileController,
 	resetPasswordController,
 	admin,
 	deleteUserController,
@@ -21,6 +22,8 @@ import {
 	logout,
 	hasToken,
 	redirectNotAuth
+	getUserProfileForUpdates,
+	getUserToDeleteProfile,
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
 import {passPortLogin} from "./middlewares/security.js"
@@ -68,6 +71,8 @@ router.patch("/resetPassword", limiter , getUserAndResetPassword)
 router.get("/", limiter, (req,res)=>{
 	res.redirect('/login')
 })
+router.get("/updateUserProfile", limiter, updateProfileController)
+router.get('/deleteUserProfile', limiter, deleteUserController)
 
 
 router.get("/home", limiter, redirectNotAuth, homeController)
@@ -75,6 +80,8 @@ router.get('/logout', limiter,  logout)
 router.get('/protected', limiter, passport.authenticate('jwt', { session: false }), hasToken) // to test token
 // espace admin
 
+router.get("/user", getAllUsersController)
+router.get("/user/:id", getOneUserController) // to get only one element
 router.get("/home/admin", limiter, admin)
 
 router.delete("/user/:userId", deleteUserController)
@@ -85,11 +92,13 @@ router.patch("/home/admin/:userId", limiter, userEdit)
 
 router.post("/user/auth", authUserController)
 router.post("/user/forgotPassword", getUserAndSendMail)
-router.patch("/user/resetPassword", getUserAndResetPassword)
-router.get("/user", getAllUsersController)
-router.get("/user/:id", getOneUserController) // to get only one element
 router.post("/user", postUserController)
+router.patch("/user/resetPassword", getUserAndResetPassword)
+router.patch("/user/updateUserProfile", getUserProfileForUpdates)
 router.patch("/user", patchUserController) // update partially resources
+
+router.delete("/user/deleteUserProfile", getUserToDeleteProfile)
+
 router.put("/user", putUserController) // replace resources
 
 router.get("/user", limiter, redirectNotAuth, getAllUsersController)

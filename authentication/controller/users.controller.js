@@ -1,5 +1,5 @@
 import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser} from "../validator.js";
-import {createUser, authUser, getUser, resetUserPasswordById} from "../services/users.services.js";
+import {createUser, authUser, getUser, resetUserPasswordById,  updateUserProfile, deleteUserProfile} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
@@ -103,9 +103,31 @@ export async function getUserAndResetPassword(req, res){
     res.json(userUpdate)
 }
 
-export function getAllUsersController(req, res){
-
+export async function getUserProfileForUpdates(req, res){
+    const body = req.body
+    const check = checkLoginUser(body)
+    if(!check){
+        return res.status(400).json({
+            error : check
+        }) // bad request
+    }
+    const user = await updateUserProfile(body.pseudo, body.password, body.mail)
+    res.json(user)
 }
+
+export async function getUserToDeleteProfile(req, res) {
+    const body = req.body;
+    const check = checkLoginUser(body);
+    if (!check) {
+        return res.status(400).json({
+            error: check,
+        })
+    }
+    const user = await deleteUserProfile(body.mail,body.password);
+    res.json(user);
+}
+
+export function getAllUsersController(req, res){}
 
 export async function getOneUserController(req, res){
     const body = req.body
@@ -140,14 +162,6 @@ export async function postUserController(req, res){
     res.json(user)
 }
 
-export function patchUserController(req, res){
+export function patchUserController(req, res){}
 
-}
-
-export function putUserController(req, res){
-
-}
-
-export function deleteUserController(req, res){
-
-}
+export function putUserController(req, res){}
