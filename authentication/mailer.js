@@ -2,7 +2,12 @@ import nodemailer from "nodemailer" ;
 import config from "./config.js";
 
 
-// async..await is not allowed in global scope, must use a wrapper
+/**
+ * Send a mail to user who forgot his password.
+ * The mail contain a link to a reset password page.
+ * @param mail {String} : mail of the user
+ * @return {Promise<void>}
+ */
 export async function sendMailForgotPassword(mail) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing

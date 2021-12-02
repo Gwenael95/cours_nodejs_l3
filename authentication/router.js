@@ -30,6 +30,12 @@ const limiter = rateLimit({
 	max: 50
 })
 
+/**
+ * 
+ * @param req
+ * @param res
+ * @param next
+ */
 const redirect = function(req, res, next) {
 	if ( req.isAuthenticated() ) {
 		next();
