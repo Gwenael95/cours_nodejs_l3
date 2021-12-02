@@ -14,7 +14,7 @@ const http = require("http").createServer(app);
 // On instancie socket.io
 const io = require("socket.io")(http);
 
-// On charge sequelize
+// On va charger sequelize
 const Sequelize = require("sequelize");
 
 // On fabrique le lien de la base de données
