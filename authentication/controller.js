@@ -1,3 +1,4 @@
+//@todo rename file as pages.controller.js
 export function homeController(req, res){
 	console.log(req.query)
 	res.render("home.html", {
@@ -29,12 +30,5 @@ export function logInController(req, res){
 	console.log(req.query)
 	res.render("login.html", {
 		title : "Se connecter",
-	})
-}
-
-export function formController(req, res){
-	console.log(req.body)
-	res.json({
-		success:true,
 	})
 }

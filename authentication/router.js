@@ -1,11 +1,10 @@
-import express from 'express'
+import express from "express"
 import { homeController,
-	formController,
 	signInController,
 	logInController,
 	resetPasswordController,
 	forgotPasswordController
-} from './controller.js'
+} from "./controller.js"
 import {
 	deleteUserController,
 	getAllUsersController,
@@ -13,12 +12,17 @@ import {
 	patchUserController,
 	postUserController,
 	putUserController,
-	authUserController,
+	authUserPassport,
 	getUserAndSendMail,
-	getUserAndResetPassword
+	getUserAndResetPassword,
+	logout,
+	hasToken,
+	redirectNotAuth
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
-import {checkJWT} from "./middlewares/security.js"
+import {passPortLogin} from "./middlewares/security.js"
+import passport from "passport"
+import jwt from "jsonwebtoken"
 
 // limit nb of request from a user
 const limiter = rateLimit({
@@ -26,33 +30,49 @@ const limiter = rateLimit({
 	max: 50
 })
 
-const mw_test = (req, res, next) => {
-	console.log("")
-	next()
+const redirect = function(req, res, next) {
+	if ( req.isAuthenticated() ) {
+		next();
+		return
+	}
+	// Redirect here if logged in successfully
+	//req.session.redirectTo = req.path;
+	res.redirect(req.redirectPath || "/login")
 }
 
 const router= express.Router()
 
+
+router.get("/", redirectNotAuth)
+
 router.get("/login", limiter, logInController)
+router.post("/login", limiter,  passPortLogin, authUserPassport) // api call
+
 router.get("/signin", limiter, signInController)
+router.post("/signin", limiter,  postUserController) // api call
+
 router.get("/forgotPassword", limiter, forgotPasswordController)
+router.post("/forgotPassword", limiter,  getUserAndSendMail)
+
 router.get("/resetPassword", limiter, resetPasswordController)
-
-router.get("/home", checkJWT,  homeController)
-router.post("/form", mw_test, formController)
+router.patch("/resetPassword", limiter , getUserAndResetPassword)
 
 
-router.post("/user/auth", authUserController)
-router.post("/user/forgotPassword", getUserAndSendMail) //@todo use jwt to avoid abusive usage
-router.patch("/user/resetPassword", getUserAndResetPassword)
+router.get("/home", limiter, redirectNotAuth,  homeController)
+router.get('/logout', limiter,  logout)
+router.get('/protected', limiter, passport.authenticate('jwt', { session: false }), hasToken) // to test token
 
-router.get("/user", getAllUsersController)
-router.get("/user/:id", getOneUserController) // to get only one element
-router.post("/user", postUserController)
-router.patch("/user", patchUserController) // update partially resources
-router.delete("/user", deleteUserController)
-router.put("/user", putUserController) // replace resources
 
+router.get("/user", limiter, redirectNotAuth, getAllUsersController)
+router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to get only one element
+router.post("/user", limiter, redirectNotAuth,  postUserController) // api call
+router.patch("/user", limiter, redirectNotAuth, patchUserController) // update partially resources
+router.delete("/user", limiter, redirectNotAuth, deleteUserController)
+router.put("/user", limiter, redirectNotAuth, putUserController) // replace resources
+
+
+
+router.get("*", limiter, redirect) // for all route not defined before, redirect to login
 
 export default router // module.exports
 

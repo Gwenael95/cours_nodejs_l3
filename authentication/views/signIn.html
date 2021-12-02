@@ -67,7 +67,7 @@
                         password: getData("password"),
                         confirmPassword: getData("confirmPassword")
                     })
-                    const res = await handleFetchLogJson(fetch( '/user', {
+                    const res = await handleFetchLogJson(fetch( '/signin', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

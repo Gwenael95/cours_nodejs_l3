@@ -1,29 +1,36 @@
-import jwt from "jsonwebtoken";
-import config from "../config.js";
-import {createWebToken} from "../src/webtoken.js"
+import { checkLoginUser } from "../validator.js";
+import { authUser } from "../services/users.services.js";
+import passwordHash from "password-hash";
 
-export async function checkJWT(req, res, next){
-    let token = req.headers['x-access-token'] || req.headers['authorization'];
-    if (!!token && token.startsWith('Bearer ')) {
-        token = token.slice(7, token.length);
-    }
-    if(!token){
-        token = req.cookies.authcookie
-    }
 
-    if(token) {
-        jwt.verify(token, config.SECRET_KEY, (err, decoded) => {
-            if (err) {
-                return res.status(401).json('token_required');
-            } else if(decoded.user){
-                req.decoded = decoded;
-                const tokenData = createWebToken(decoded.user)
-                res.header('Authorization', 'Bearer ' + tokenData.token);
-                next();
+export const passPortLogin = async (req, res, next) => {
+    try {
+        const body = req.body
+        const check = checkLoginUser(body)
+        if(check !== true){
+            return res.status(400).json({
+                errors : check
+            }) // bad request
+        }
+
+        const user = await authUser(body.password, body.mail)
+        const { mail, password } = user
+
+        if (mail === body.mail) {
+            if (passwordHash.verify(body.password, password)) {
+                res.locals.user = user
+                next()
+            } else {
+                res.status(400).json({
+                    errors: 'Incorrect username or password'
+                })
             }
-        });
-    }
-    else {
-        return res.status(401).json('token_required');
+        } else {
+            res.status(400).json({
+                errors: 'Incorrect username or password'
+            })
+        }
+    } catch (error) {
+        res.status(500).json({ error })
     }
 }

@@ -63,7 +63,7 @@
                     mail: getData("email"),
                     password: getData("password"),
                 })
-                const res = await handleFetchLogJson(fetch( '/user/auth', {
+                const res = await handleFetchLogJson(fetch( '/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
