@@ -70,25 +70,25 @@ export async function getUser(mail) {
         return err
     }
 }
+
+
 export async function getUserById(id) {
     try {
-        const user = await User.findOne({
-            _id :id
-        })
-        delete user.password; // ? delete user._doc.password;
-
+        const user = await User.findById(id).exec()
         return user;
     }catch(err){
         return err
     }
 }
 
-/**@todo refactor to resetUserForgotPassword (
- * Reset user password using his mail
- * @param password {String} : user's password
- * @param mail {String} : user's mail
- * @return {Promise<any>}
- */
+export async function getAllUser() {
+    try {
+        const user = await User.find({}).exec()
+        return user;
+    }catch(err){
+        return err
+    }
+}
 export async function resetUserPassword(password, mail) {
     try {
         const hashedPassword = passwordHash.generate(password);
@@ -103,6 +103,12 @@ export async function resetUserPassword(password, mail) {
         return err
     }
 }
+/**@todo refactor to resetUserForgotPassword (
+ * Reset user password using his mail
+ * @param password {String} : user's password
+ * @param mail {String} : user's mail
+ * @return {Promise<any>}
+ */
 export async function resetUserPasswordById(password, id) {
     try {
         const hashedPassword = passwordHash.generate(password);
@@ -111,6 +117,9 @@ export async function resetUserPasswordById(password, id) {
             _id:id
         }, { password: hashedPassword})
         delete user.password; // ? delete user._doc.password;
+export function UserDelete(user){
+    return User.findByIdAndDelete(user).exec()
+ }
 
         return user;
     }catch(err){

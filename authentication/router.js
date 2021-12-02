@@ -3,10 +3,13 @@ import { homeController,
 	signInController,
 	logInController,
 	resetPasswordController,
-	forgotPasswordController
-} from "./controller.js"
-import {
+	admin,
 	deleteUserController,
+	userForm,
+	userEdit
+	forgotPasswordController
+} from './controller.js'
+import {
 	getAllUsersController,
 	getOneUserController,
 	patchUserController,
@@ -62,12 +65,32 @@ router.post("/forgotPassword", limiter,  getUserAndSendMail)
 
 router.get("/resetPassword", limiter, resetPasswordController)
 router.patch("/resetPassword", limiter , getUserAndResetPassword)
+router.get("/", limiter, (req,res)=>{
+	res.redirect('/login')
+})
 
 
 router.get("/home", limiter, redirectNotAuth, homeController)
 router.get('/logout', limiter,  logout)
 router.get('/protected', limiter, passport.authenticate('jwt', { session: false }), hasToken) // to test token
+// espace admin
 
+router.get("/home/admin", limiter, admin)
+
+router.delete("/user/:userId", deleteUserController)
+
+router.get("/home/admin/:userId", limiter, userForm)
+router.patch("/home/admin/:userId", limiter, userEdit)
+
+
+router.post("/user/auth", authUserController)
+router.post("/user/forgotPassword", getUserAndSendMail)
+router.patch("/user/resetPassword", getUserAndResetPassword)
+router.get("/user", getAllUsersController)
+router.get("/user/:id", getOneUserController) // to get only one element
+router.post("/user", postUserController)
+router.patch("/user", patchUserController) // update partially resources
+router.put("/user", putUserController) // replace resources
 
 router.get("/user", limiter, redirectNotAuth, getAllUsersController)
 router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to get only one element
