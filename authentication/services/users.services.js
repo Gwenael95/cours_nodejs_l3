@@ -1,6 +1,7 @@
 import User from "../db/models/Users.js"
 import passwordHash from "password-hash";
 
+
 /**
  * Create and save a new User
  * @param pseudo
@@ -15,6 +16,8 @@ export async function createUser(pseudo, password, mail) {
         const user = await User.create({
             pseudo, password: hashedPassword, mail
         })
+        delete user.password; // ? delete user._doc.password;
+
         return user
     }catch(err){
         return err
@@ -26,11 +29,19 @@ export async function authUser(password, mail) {
         const user = await User.findOne({
             mail
         }).exec()
-        if (passwordHash.verify(password, user.password)) {
-            return user;
+
+        if (user) {
+            if (passwordHash.verify(password, user.password)) {
+                delete user.password; // ? delete user._doc.password;
+                return user;
+            }
+            else{
+                return {errors: "Les données fournis ne permette pas d'identifier l'utilisateur"};
+            }
         } else {
             return {errors: "Cet utilisateur n'existe pas"};
         }
+
     }catch(err){
         return err
     }
@@ -41,6 +52,8 @@ export async function getUser(mail) {
         const user = await User.findOne({
             mail
         }).exec()
+        delete user.password; // ? delete user._doc.password;
+
         return user;
     }catch(err){
         return err
@@ -54,6 +67,8 @@ export async function resetUserPassword(password, mail) {
         const user = await User.findOneAndUpdate({
             mail
         }, { password: hashedPassword}).exec()
+        delete user.password; // ? delete user._doc.password;
+
         return user;
     }catch(err){
         return err

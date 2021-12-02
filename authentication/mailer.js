@@ -1,6 +1,13 @@
 import nodemailer from "nodemailer" ;
+import config from "./config.js";
 
-// async..await is not allowed in global scope, must use a wrapper
+
+/**
+ * Send a mail to user who forgot his password.
+ * The mail contain a link to a reset password page.
+ * @param mail {String} : mail of the user
+ * @return {Promise<void>}
+ */
 export async function sendMailForgotPassword(mail) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
@@ -19,11 +26,11 @@ export async function sendMailForgotPassword(mail) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: '<l3.cergy@edu.itescia.fr>', // sender address
         to: mail, // list of receivers
         subject: "Mot de passe oublié ✔", // Subject line
         html: "<b>Voici un lien pour récuperer votre mot de passe." +
-            "<a href='http://127.0.0.1:8088/resetPassword?mail=" + mail + "'>Cliquez ici.</a>" +
+            "<a href='http://" + config.HOST + ":" + config.PORT + "/resetPassword?mail=" + mail + "'>Cliquez ici.</a>" +
             "</b>", // html body
     });
 

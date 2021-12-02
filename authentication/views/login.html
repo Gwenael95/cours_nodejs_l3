@@ -28,7 +28,7 @@
                 <input type="button" id="submitButton" value="Se connecter">
             </form>
             <div>
-                <a href="../public/forgotPassword.html">
+                <a href="/forgotPassword">
                     Mot de passe oublié?
                 </a>
             </div>
@@ -63,14 +63,14 @@
                     mail: getData("email"),
                     password: getData("password"),
                 })
-                const res = await handleFetchLogJson(fetch( '/user/auth', {
+                const res = await handleFetchLogJson(fetch( '/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body
                 }));
-                if(res.errors) {
+                if(!res || res.errors) {
                     document.getElementById("notification").textContent = "Connexion impossible, "
                 }
                 else{
