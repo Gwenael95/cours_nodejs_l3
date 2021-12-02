@@ -11,6 +11,7 @@
 
 import express from "express" // without type:module => const express = require("express")
 import http from "http"
+import nodemon from "nodemon"
 import config from "./config.js"
 import apiRouter from "./router.js"
 import nunjucks from "nunjucks"

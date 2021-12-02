@@ -3,9 +3,11 @@ import { homeController,
 	formController,
 	signInController,
 	logInController,
-	resetPasswordController} from './controller.js'
-import {
+	resetPasswordController,
+	updateProfileController,
 	deleteUserController,
+} from './controller.js'
+import {
 	getAllUsersController,
 	getOneUserController,
 	patchUserController,
@@ -13,7 +15,9 @@ import {
 	putUserController,
 	authUserController,
 	getUserAndSendMail,
-	getUserAndResetPassword
+	getUserAndResetPassword,
+	getUserProfileForUpdates,
+	getUserToDeleteProfile,
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
 
@@ -34,19 +38,24 @@ const router= express.Router()
 router.get("/login", limiter, logInController)
 router.get("/signin", limiter, signInController)
 router.get("/resetPassword", limiter, resetPasswordController)
+router.get("/updateUserProfile", limiter, updateProfileController)
+router.get('/deleteUserProfile', limiter, deleteUserController)
 
 router.get("/home", homeController)
 router.post("/form", mw_test, formController)
 
 
-router.post("/user/auth", authUserController)
-router.post("/user/forgotPassword", getUserAndSendMail)
-router.patch("/user/resetPassword", getUserAndResetPassword)
 router.get("/user", getAllUsersController)
 router.get("/user/:id", getOneUserController) // to get only one element
+router.post("/user/auth", authUserController)
+router.post("/user/forgotPassword", getUserAndSendMail)
 router.post("/user", postUserController)
+router.patch("/user/resetPassword", getUserAndResetPassword)
+router.patch("/user/updateUserProfile", getUserProfileForUpdates)
 router.patch("/user", patchUserController) // update partially resources
-router.delete("/user", deleteUserController)
+
+router.delete("/user/deleteUserProfile", getUserToDeleteProfile)
+
 router.put("/user", putUserController) // replace resources
 
 
