@@ -1,5 +1,5 @@
-import {checkPostUsers, checkLoginUser, checkPasswordUser} from "../validator.js";
-import {createUser, authUser, getUser, resetUserPassword} from "../services/users.services.js";
+import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser} from "../validator.js";
+import {createUser, authUser, getUser, resetUserPasswordById} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
@@ -62,6 +62,7 @@ export async function hasToken(req, res){
     })
 }
 export function redirectNotAuth(req, res, next){
+    console.log("redirect not auth")
     passport.authenticate('jwt', {
         //successRedirect: '/home',
         failureRedirect: '/login',
@@ -81,20 +82,25 @@ export async function getUserAndSendMail(req, res){
         }) // bad request
     }
     const user = await getUser(body.mail)
-    sendMailForgotPassword(user.mail).catch(console.error);
+    if (Object.keys(user).length===0 ||  user.errors){
+        return res.status(404).json({
+            errors : user.errors || "User not found"
+        }) // not found
+    }
+    sendMailForgotPassword(user.mail, user._id).catch(console.error);
     res.json(user)
 }
 
 export async function getUserAndResetPassword(req, res){
     const body = req.body
-    const check = checkLoginUser(body)
+    const check = checkResetPasswordUser(body)
     if(check !== true){
         return res.status(400).json({
-            error : check
+            errors : check
         }) // bad request
     }
-    const user = await resetUserPassword(body.password, body.mail)
-    res.json(user)
+    const userUpdate = await resetUserPasswordById(body.password, body.id)
+    res.json(userUpdate)
 }
 
 export function getAllUsersController(req, res){
@@ -116,12 +122,21 @@ export async function getOneUserController(req, res){
 export async function postUserController(req, res){
     const body = req.body
     const check = checkPostUsers(body)
+    console.log("post user")
+    console.log(body)
+    console.log(check)
+    console.log(config)
     if(check !== true || body.password !== body.confirmPassword){
         return res.status(400).json({
             error : check
         }) // bad request
     }
     const user = await createUser(body.pseudo, body.password, body.mail)
+    if(user.errors){
+        return res.status(500).json({
+            errors : user,
+        }) // bad request
+    }
     res.json(user)
 }
 

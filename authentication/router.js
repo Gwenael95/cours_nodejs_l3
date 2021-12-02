@@ -31,19 +31,19 @@ const limiter = rateLimit({
 })
 
 /**
- * 
+ * Redirect to login if not authenticated
  * @param req
  * @param res
  * @param next
  */
 const redirect = function(req, res, next) {
-	if ( req.isAuthenticated() ) {
+	/*if ( req.isAuthenticated() ) {
 		next();
 		return
-	}
+	}*/
 	// Redirect here if logged in successfully
 	//req.session.redirectTo = req.path;
-	res.redirect(req.redirectPath || "/login")
+	res.redirect(req.redirectPath || "/home")
 }
 
 const router= express.Router()
@@ -64,7 +64,7 @@ router.get("/resetPassword", limiter, resetPasswordController)
 router.patch("/resetPassword", limiter , getUserAndResetPassword)
 
 
-router.get("/home", limiter, redirectNotAuth,  homeController)
+router.get("/home", limiter, redirectNotAuth, homeController)
 router.get('/logout', limiter,  logout)
 router.get('/protected', limiter, passport.authenticate('jwt', { session: false }), hasToken) // to test token
 
@@ -78,7 +78,7 @@ router.put("/user", limiter, redirectNotAuth, putUserController) // replace reso
 
 
 
-router.get("*", limiter, redirect) // for all route not defined before, redirect to login
+//router.get("*", limiter, redirect) // for all route not defined before, redirect to login
 
 export default router // module.exports
 

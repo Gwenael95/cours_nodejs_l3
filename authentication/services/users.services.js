@@ -3,10 +3,10 @@ import passwordHash from "password-hash";
 
 
 /**
- * Create and save a new User
- * @param pseudo
- * @param password
- * @param mail
+ * Create and save a new User in DB
+ * @param pseudo {String} : user's pseudo
+ * @param password {String} : user's password
+ * @param mail {String} : user's password
  * @return {Promise<Document<any, any, unknown> & Require_id<unknown>>}
  */
 export async function createUser(pseudo, password, mail) {
@@ -24,15 +24,21 @@ export async function createUser(pseudo, password, mail) {
     }
 }
 
+/**
+ * Authenticate an user using his mail and then verify his password
+ * @param password {String} : user's password
+ * @param mail {String} : user's mail
+ * @return {Promise<{errors: string}|any>}
+ */
 export async function authUser(password, mail) {
     try {
         const user = await User.findOne({
             mail
-        }).exec()
+        })
 
         if (user) {
             if (passwordHash.verify(password, user.password)) {
-                delete user.password; // ? delete user._doc.password;
+                //delete user.password; // ? delete user._doc.password;
                 return user;
             }
             else{
@@ -47,11 +53,28 @@ export async function authUser(password, mail) {
     }
 }
 
+/** @todo refactor to getUserByMail
+ * Get on user using is mail
+ * @param mail {String} : user's mail
+ * @return {Promise<any>}
+ */
 export async function getUser(mail) {
     try {
         const user = await User.findOne({
             mail
-        }).exec()
+        })
+        delete user.password; // ? delete user._doc.password;
+
+        return user;
+    }catch(err){
+        return err
+    }
+}
+export async function getUserById(id) {
+    try {
+        const user = await User.findOne({
+            _id :id
+        })
         delete user.password; // ? delete user._doc.password;
 
         return user;
@@ -60,13 +83,19 @@ export async function getUser(mail) {
     }
 }
 
+/**@todo refactor to resetUserForgotPassword (
+ * Reset user password using his mail
+ * @param password {String} : user's password
+ * @param mail {String} : user's mail
+ * @return {Promise<any>}
+ */
 export async function resetUserPassword(password, mail) {
     try {
         const hashedPassword = passwordHash.generate(password);
 
         const user = await User.findOneAndUpdate({
             mail
-        }, { password: hashedPassword}).exec()
+        }, { password: hashedPassword})
         delete user.password; // ? delete user._doc.password;
 
         return user;
@@ -74,7 +103,20 @@ export async function resetUserPassword(password, mail) {
         return err
     }
 }
+export async function resetUserPasswordById(password, id) {
+    try {
+        const hashedPassword = passwordHash.generate(password);
 
+        const user = await User.findOneAndUpdate({
+            _id:id
+        }, { password: hashedPassword})
+        delete user.password; // ? delete user._doc.password;
+
+        return user;
+    }catch(err){
+        return err
+    }
+}
 
 
 // @todo delete

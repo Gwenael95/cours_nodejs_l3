@@ -1,14 +1,15 @@
 import nodemailer from "nodemailer" ;
 import config from "./config.js";
 
-
+//@todo link should contain a key (generated with date and some other data
 /**
  * Send a mail to user who forgot his password.
  * The mail contain a link to a reset password page.
  * @param mail {String} : mail of the user
+ * @param id {String} : a key to identify user
  * @return {Promise<void>}
  */
-export async function sendMailForgotPassword(mail) {
+export async function sendMailForgotPassword(mail, id) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
     let testAccount = await nodemailer.createTestAccount();
@@ -26,11 +27,11 @@ export async function sendMailForgotPassword(mail) {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '<l3.cergy@edu.itescia.fr>', // sender address
+        from: '<foo@example.com>', // sender address // l3.cergy@edu.itescia.fr
         to: mail, // list of receivers
         subject: "Mot de passe oublié ✔", // Subject line
         html: "<b>Voici un lien pour récuperer votre mot de passe." +
-            "<a href='http://" + config.HOST + ":" + config.PORT + "/resetPassword?mail=" + mail + "'>Cliquez ici.</a>" +
+            "<a href='http://" + config.HOST + ":" + config.PORT + "/resetPassword?user=" + id +"'>Cliquez ici.</a>" +
             "</b>", // html body
     });
 
