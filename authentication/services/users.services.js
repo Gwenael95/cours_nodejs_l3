@@ -70,6 +70,18 @@ export async function getUser(mail) {
         return err
     }
 }
+export async function getUserById(id) {
+    try {
+        const user = await User.findOne({
+            _id :id
+        })
+        delete user.password; // ? delete user._doc.password;
+
+        return user;
+    }catch(err){
+        return err
+    }
+}
 
 /**@todo refactor to resetUserForgotPassword (
  * Reset user password using his mail
@@ -91,7 +103,20 @@ export async function resetUserPassword(password, mail) {
         return err
     }
 }
+export async function resetUserPasswordById(password, id) {
+    try {
+        const hashedPassword = passwordHash.generate(password);
 
+        const user = await User.findOneAndUpdate({
+            _id:id
+        }, { password: hashedPassword})
+        delete user.password; // ? delete user._doc.password;
+
+        return user;
+    }catch(err){
+        return err
+    }
+}
 
 
 // @todo delete

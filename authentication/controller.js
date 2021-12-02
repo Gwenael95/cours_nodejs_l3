@@ -44,7 +44,8 @@ export function resetPasswordController(req, res){
 	console.log(req.query)
 	res.render("resetPassword.html", {
 		title : "Réinitialiser son mot de passe",
-		mail: req.query.mail
+		user: req.query.user,
+		key: req.query.key
 	})
 }
 

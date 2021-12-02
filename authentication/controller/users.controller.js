@@ -1,5 +1,5 @@
-import {checkPostUsers, checkLoginUser, checkPasswordUser} from "../validator.js";
-import {createUser, authUser, getUser, resetUserPassword} from "../services/users.services.js";
+import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser} from "../validator.js";
+import {createUser, authUser, getUser, resetUserPasswordById} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
@@ -82,20 +82,25 @@ export async function getUserAndSendMail(req, res){
         }) // bad request
     }
     const user = await getUser(body.mail)
-    sendMailForgotPassword(user.mail).catch(console.error);
+    if (Object.keys(user).length===0 ||  user.errors){
+        return res.status(404).json({
+            errors : user.errors || "User not found"
+        }) // not found
+    }
+    sendMailForgotPassword(user.mail, user._id).catch(console.error);
     res.json(user)
 }
 
 export async function getUserAndResetPassword(req, res){
     const body = req.body
-    const check = checkLoginUser(body)
+    const check = checkResetPasswordUser(body)
     if(check !== true){
         return res.status(400).json({
-            error : check
+            errors : check
         }) // bad request
     }
-    const user = await resetUserPassword(body.password, body.mail)
-    res.json(user)
+    const userUpdate = await resetUserPasswordById(body.password, body.id)
+    res.json(userUpdate)
 }
 
 export function getAllUsersController(req, res){
