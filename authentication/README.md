@@ -61,3 +61,8 @@ Pour cela, ouvrez un terminal et placez-vous à la racine du projet.
 
 Ceci fait, il suffira de lancer la commande ```npm install``` pour que
 les dépendances nécessaires soient installées à partir du fichier ```package.json```.
+
+#Tchat
+Pour lancer le serveur de tchat en prod, utiliser la commande ```npm start```.
+Si on souhaite le lancer en mode dev, afin que le serveur se relance 
+après modification de fichier du projet, utiliser plutôt la commande ```npm run dev```.

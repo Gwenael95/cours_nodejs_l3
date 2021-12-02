@@ -78,7 +78,7 @@ router.put("/user", limiter, redirectNotAuth, putUserController) // replace reso
 
 
 
-router.get("*", limiter, redirect) // for all route not defined before, redirect to login
+//router.get("*", limiter, redirect) // for all route not defined before, redirect to login
 
 export default router // module.exports
 
