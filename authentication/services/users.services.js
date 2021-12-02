@@ -53,12 +53,12 @@ export async function authUser(password, mail) {
     }
 }
 
-/** @todo refactor to getUserByMail
+/**
  * Get on user using is mail
  * @param mail {String} : user's mail
  * @return {Promise<any>}
  */
-export async function getUser(mail) {
+export async function getUserByMail(mail) {
     try {
         const user = await User.findOne({
             mail
@@ -74,7 +74,7 @@ export async function getUser(mail) {
 
 export async function getUserById(id) {
     try {
-        const user = await User.findById(id).exec()
+        const user = await User.findById(id)
         return user;
     }catch(err){
         return err
@@ -83,7 +83,7 @@ export async function getUserById(id) {
 
 export async function getAllUser() {
     try {
-        const user = await User.find({}).exec()
+        const user = await User.find({})
         return user;
     }catch(err){
         return err
@@ -103,6 +103,17 @@ export async function resetUserPassword(password, mail) {
         return err
     }
 }
+/*
+@todo change role of user to admin
+db.users.findOneAndUpdate({
+    mail:"gwenael.mw@gmail.com"
+}, { role:"admin"})
+
+==
+db.users.findOneAndUpdate({"mail":"gwenael.mw@gmail.com"},{$set:{"role":"admin"}})
+
+*/
+
 /**@todo refactor to resetUserForgotPassword (
  * Reset user password using his mail
  * @param password {String} : user's password
@@ -124,7 +135,7 @@ export async function resetUserPasswordById(password, id) {
 }
 
 export function UserDelete(user){
-    return User.findByIdAndDelete(user).exec()
+    return User.findByIdAndDelete(user)
 }
 
 
@@ -135,7 +146,7 @@ export async function updateUserProfile(pseudo, password, mail) {
         const newPseudo = pseudo;
         const user = await User.findOneAndUpdate({
             mail
-        }, { pseudo: newPseudo, password: hashedPassword, mail: newEmail }).exec()
+        }, { pseudo: newPseudo, password: hashedPassword, mail: newEmail })
         return user;
     }catch(err){
         return err
@@ -144,9 +155,9 @@ export async function updateUserProfile(pseudo, password, mail) {
 
 export async function deleteUserProfile(mail, password) {
     try {
-        const user = await User.findOne({mail}).exec();
+        const user = await User.findOne({mail});
         if (passwordHash.verify(password, user.password )) {
-            user.deleteOne();
+            await User.deleteOne({mail});
             return user;
         } else {
             return {errors: "Une erreur est survenue."};

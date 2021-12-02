@@ -6,7 +6,7 @@ import config from "../../config.js"
 /**
  * Extract data from the cookies in request header
  * @param req
- * @return {null|Strign}
+ * @return {null|String}
  */
 const cookieExtractor = req => {
     let jwt = null

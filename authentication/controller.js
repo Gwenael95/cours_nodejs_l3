@@ -1,5 +1,18 @@
 import { getAllUser, getUserById, UserDelete } from './services/users.services.js'
 
+function getCurrentUser(req){
+	if(req.user){
+		return {
+			pseudo : req.user.pseudo,
+			role : req.user.role,
+			isAdmin: req.user.role === "admin",
+		}
+	}
+	else{
+		return null
+	}
+}
+
 //@todo rename file as pages.controller.js
 /**
  * Controller to display home page
@@ -7,23 +20,25 @@ import { getAllUser, getUserById, UserDelete } from './services/users.services.j
  * @param res
  */
 export function homeController(req, res){
-	const currentUser = {
-		nom : 'riles',
-		role : true
-	}
-	console.log(req.query)
+	const currentUser = getCurrentUser(req)
 	res.render("home.html", {
-		title : "Home",
+		title : "Acueil",
 		currentUser
 	})
 }
 
 export async function admin(req, res){
-	const users = await getAllUser()
-	res.render("crud.html", {
-		title : "Home",
-		users
-	})
+	const currentUser = getCurrentUser(req)
+
+	if (currentUser.isAdmin){
+		const users = await getAllUser()
+		return res.render("crud.html", {
+			title : "Espace Admin",
+			users,
+			currentUser
+		})
+	}
+	res.redirect("/home")
 }
 
 export async function deleteUserControllerAdmin(req, res){

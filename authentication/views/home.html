@@ -8,7 +8,7 @@
     <h1>{{ title }}</h1>
     <div id="app"></div>
 
-    {% if currentUser.role  %}
+    {% if currentUser.isAdmin  %}
     <a href="/home/admin">Espace admin</a>
     {% endif %}
 
@@ -19,6 +19,7 @@
         </div>
     </script>
 
+    <!--
     <script src="https://unpkg.com/vue@next"></script>
     <script src="/socket.io/socket.io.js"> </script>
     <script>
@@ -41,5 +42,6 @@
 
         const app = Vue.createApp(appComponent).mount("#app")
     </script>
+    -->
 </body>
 </html>

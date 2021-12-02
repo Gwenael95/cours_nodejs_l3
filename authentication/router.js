@@ -25,11 +25,13 @@ import {
 	redirectNotAuth,
 	getUserProfileForUpdates,
 	getUserToDeleteProfile,
+	tryAuth
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
-import {passPortLogin} from "./middlewares/security.js"
+import {passPortLogin, decodeToken} from "./middlewares/security.js"
 import passport from "passport"
 import jwt from "jsonwebtoken"
+import config from "./config.js";
 
 // limit nb of request from a user
 const limiter = rateLimit({
@@ -50,14 +52,15 @@ const redirect = function(req, res, next) {
 	}*/
 	// Redirect here if logged in successfully
 	//req.session.redirectTo = req.path;
-	res.redirect(req.redirectPath || "/home")
+	res.redirect(req.redirectPath || "/login")
 }
 
 const router= express.Router()
 
 
-router.get("/", redirectNotAuth)
+router.get("/", redirect)
 
+//region route doesn't required token
 router.get("/login", limiter, logInController)
 router.post("/login", limiter,  passPortLogin, authUserPassport) // api call
 
@@ -69,23 +72,22 @@ router.post("/forgotPassword", limiter,  getUserAndSendMail)
 
 router.get("/resetPassword", limiter, resetPasswordController)
 router.patch("/resetPassword", limiter , getUserAndResetPassword)
-router.get("/", limiter, (req,res)=>{
-	res.redirect('/login')
-})
+
 router.get("/updateUserProfile", limiter, updateProfileController)
 router.get('/deleteUserProfile', limiter, deleteUserController)
+//endregion
 
-
-router.get("/home", limiter, redirectNotAuth, homeController)
-router.get('/logout', limiter,  logout)
+router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
+router.get('/logout', limiter,  logout) //@todo add a button to call logout
 router.get('/protected', limiter, passport.authenticate('jwt', { session: false }), hasToken) // to test token
 // espace admin
 
-router.get("/user", getAllUsersController)
-router.get("/user/:id", getOneUserController) // to get only one element
-router.get("/home/admin", limiter, admin)
+router.get("/user", limiter, redirectNotAuth, getAllUsersController)
+router.get("/user/:mail", limiter, redirectNotAuth, getOneUserController)
+router.get("/home/admin", limiter, redirectNotAuth, decodeToken, admin)
 
-router.delete("/user/:userId", deleteUserController)
+router.get("/user/deleteUserProfile", limiter, redirectNotAuth, deleteUserController)
+router.delete("/user/deleteUserProfile", limiter, tryAuth, getUserToDeleteProfile)
 
 router.get("/home/admin/:userId", limiter, userForm)
 router.patch("/home/admin/:userId", limiter, userEdit)
@@ -95,7 +97,6 @@ router.post("/user", postUserController)
 router.patch("/user/updateUserProfile", getUserProfileForUpdates)
 router.patch("/user", patchUserController) // update partially resources
 
-router.delete("/user/deleteUserProfile", getUserToDeleteProfile)
 
 router.put("/user", putUserController) // replace resources
 
@@ -104,7 +105,7 @@ router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to ge
 router.post("/user", limiter, redirectNotAuth,  postUserController) // api call
 router.patch("/user", limiter, redirectNotAuth, patchUserController) // update partially resources
 router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)
-router.put("/user", limiter, redirectNotAuth, putUserController) // replace resources
+//router.put("/user", limiter, redirectNotAuth, putUserController) // replace resources
 
 
 

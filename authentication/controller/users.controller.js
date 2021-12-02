@@ -1,5 +1,5 @@
 import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser} from "../validator.js";
-import {createUser, authUser, getUser, resetUserPasswordById,  updateUserProfile, deleteUserProfile} from "../services/users.services.js";
+import {createUser, authUser, getUserByMail, resetUserPasswordById,  updateUserProfile, deleteUserProfile, getAllUser} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
@@ -23,6 +23,8 @@ export async function authUserPassport(req, res, next){
 
     const payload = {
         mail: user.mail,
+        pseudo: user.pseudo,
+        role:user.role,
         expiration: Date.now() + parseInt(config.JWT_EXPIRATION_TIME)
     }
 
@@ -42,6 +44,10 @@ export async function authUserPassport(req, res, next){
 }
 
 export async function logout(req, res){
+
+    console.log("logout  controller")
+    console.log(req)
+
     if (req.cookies['jwt']) {
         res
             .clearCookie('jwt')
@@ -69,7 +75,11 @@ export function redirectNotAuth(req, res, next){
         session: false
     })(req, res, next)
 }
-
+export function tryAuth(req, res, next){
+    passport.authenticate('jwt',{
+        session:false
+    })(req, res, next)
+}
 
 
 
@@ -81,7 +91,7 @@ export async function getUserAndSendMail(req, res){
             error : check
         }) // bad request
     }
-    const user = await getUser(body.mail)
+    const user = await getUserByMail(body.mail)
     if (Object.keys(user).length===0 ||  user.errors){
         return res.status(404).json({
             errors : user.errors || "User not found"
@@ -123,21 +133,17 @@ export async function getUserToDeleteProfile(req, res) {
             error: check,
         })
     }
-    const user = await deleteUserProfile(body.mail,body.password);
+    const user = await deleteUserProfile(body.mail, body.password);
     res.json(user);
 }
 
-export function getAllUsersController(req, res){}
+export async function getAllUsersController(req, res){
+    const user = await getAllUser()
+    res.json(user)
+}
 
 export async function getOneUserController(req, res){
-    const body = req.body
-    const check = checkLoginUser(body)
-    if(check !== true){
-        return res.status(400).json({
-            error : check
-        }) // bad request
-    }
-    const user = await authUser( body.password, body.mail)
+    const user = await getUserByMail(req.params.mail)
     res.json(user)
 }
 

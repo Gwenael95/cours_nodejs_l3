@@ -5,18 +5,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./commonFunction.js"></script>
 </head>
 <body>
-    <h1>{{title}}</h1>
-    <form class="flexCenter flexColumn form" method="DELETE">
-        <div>
+    <header class="flexCenter">
+        <h1>{{ title }}</h1>
+    </header>
+    <main>
+        <form class="flexCenter flexColumn form" method="post">
             <label for="email">Saisir votre email pour supprimer votre compte</label>
-            <input type="mail" id="email" name="email" placeholder="Saisir votre email">
+            <input type="email" id="email" name="email" placeholder="Saisir votre email">
             <input type="password" id="password" name="password" placeholder="Mot de passe">
             <input type="button" id="deleteUserAcc" value="Supprimer mon compte">
+        </form>
+        <div class="flexCenter txCenter" style="height: 30px;" id="notification">
+
         </div>
-        <div style="height: 30px; font-weight: bold;" id="notification"></div>
-    </form>
+    </main>
+    <footer></footer>
 
     <script>
         let deleteUserAcc = document.querySelector('#deleteUserAcc');
@@ -25,8 +33,6 @@
         })
         
         /**
-         * @param promise : Promise<Response> :
-         */
         function handleFetchLogJson(promise){
             return promise
             .then(response => response.json())
@@ -39,10 +45,10 @@
         
         function getData(input) {
             return document.getElementById(input).value;
-        }
+        }*/
 
         async function deleteUser() {
-            if (getData('email') || getData('password')) {
+            if (getData('email') && getData('password')) {
                 const body = JSON.stringify({
                     mail: getData('email'),
                     password: getData('password'),

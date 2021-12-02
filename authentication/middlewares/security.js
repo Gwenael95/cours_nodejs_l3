@@ -1,6 +1,8 @@
 import { checkLoginUser } from "../validator.js";
 import { authUser } from "../services/users.services.js";
 import passwordHash from "password-hash";
+import jwt from "jsonwebtoken";
+import config from "../config.js";
 
 /**
  * This function get a user from DB, and check is data to the ones send by user.
@@ -40,4 +42,19 @@ export const passPortLogin = async (req, res, next) => {
     } catch (error) {
         res.status(500).json({ error })
     }
+}
+
+export const decodeToken = function(req, res, next) {
+    if (req.cookies && req.cookies["jwt"]) {
+        const token = req.cookies["jwt"];
+        jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
+            if (err) {
+                return res.status(401).json('token_not_valid');
+            } else {
+                req.user = decoded;
+                const expiresIn = 24 * 60 * 60 * 1000;
+            }
+        });
+    }
+    next()
 }
