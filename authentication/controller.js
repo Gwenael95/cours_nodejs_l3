@@ -26,7 +26,7 @@ export async function admin(req, res){
 	})
 }
 
-export async function deleteUserController(req, res){
+export async function deleteUserControllerAdmin(req, res){
   try { const user = req.params.userId;
 	console.log(user)
     await UserDelete(user)
@@ -36,6 +36,16 @@ export async function deleteUserController(req, res){
 		console.log(err, '4444444444444444444444')
 	}
 }
+export function deleteUserController(req, res) {
+	console.log(req.body);
+	res.render("deleteUserProfile.html", {
+		title: "Supprimer mon compte",
+		mail: req.query.mail,
+		password: req.query.password,
+	})
+}
+
+
 
 export async function userForm(req, res){
 	try { 
@@ -123,11 +133,3 @@ export function formController(req, res){
 	})
 }
 
-export function deleteUserController(req, res) {
-	console.log(req.body);
-	res.render("deleteUserProfile.html", {
-		title: "Supprimer mon compte",
-		mail: req.query.mail,
-		password: req.query.password,
-	})
-}

@@ -7,8 +7,9 @@ import { homeController,
 	admin,
 	deleteUserController,
 	userForm,
-	userEdit
-	forgotPasswordController
+	userEdit,
+	forgotPasswordController,
+	deleteUserControllerAdmin
 } from './controller.js'
 import {
 	getAllUsersController,
@@ -21,7 +22,7 @@ import {
 	getUserAndResetPassword,
 	logout,
 	hasToken,
-	redirectNotAuth
+	redirectNotAuth,
 	getUserProfileForUpdates,
 	getUserToDeleteProfile,
 } from "./controller/users.controller.js"
@@ -90,10 +91,7 @@ router.get("/home/admin/:userId", limiter, userForm)
 router.patch("/home/admin/:userId", limiter, userEdit)
 
 
-router.post("/user/auth", authUserController)
-router.post("/user/forgotPassword", getUserAndSendMail)
 router.post("/user", postUserController)
-router.patch("/user/resetPassword", getUserAndResetPassword)
 router.patch("/user/updateUserProfile", getUserProfileForUpdates)
 router.patch("/user", patchUserController) // update partially resources
 
@@ -105,7 +103,7 @@ router.get("/user", limiter, redirectNotAuth, getAllUsersController)
 router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to get only one element
 router.post("/user", limiter, redirectNotAuth,  postUserController) // api call
 router.patch("/user", limiter, redirectNotAuth, patchUserController) // update partially resources
-router.delete("/user", limiter, redirectNotAuth, deleteUserController)
+router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)
 router.put("/user", limiter, redirectNotAuth, putUserController) // replace resources
 
 
