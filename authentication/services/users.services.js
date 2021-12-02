@@ -47,6 +47,25 @@ export async function getUser(mail) {
     }
 }
 
+// pareil avec id 
+
+export async function getUserById(id) {
+    try {
+        const user = await User.findById(id).exec()
+        return user;
+    }catch(err){
+        return err
+    }
+}
+
+export async function getAllUser() {
+    try {
+        const user = await User.find({}).exec()
+        return user;
+    }catch(err){
+        return err
+    }
+}
 export async function resetUserPassword(password, mail) {
     try {
         const hashedPassword = passwordHash.generate(password);
@@ -59,6 +78,10 @@ export async function resetUserPassword(password, mail) {
         return err
     }
 }
+
+export function UserDelete(user){
+    return User.findByIdAndDelete(user).exec()
+ }
 
 
 

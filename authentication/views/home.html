@@ -8,6 +8,10 @@
     <h1>{{ title }}</h1>
     <div id="app"></div>
 
+    {% if currentUser.role  %}
+    <a href="/home/admin">Espace admin</a>
+    {% endif %}
+
 
     <script type="text/x-template" id="app-template">
         <div>
