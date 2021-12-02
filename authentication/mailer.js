@@ -2,6 +2,7 @@ import nodemailer from "nodemailer" ;
 import config from "./config.js";
 
 
+//@todo link should contain a key (generated with date and some other data
 /**
  * Send a mail to user who forgot his password.
  * The mail contain a link to a reset password page.
