@@ -70,7 +70,7 @@
                     },
                     body
                 }));
-                if(res.errors) {
+                if(!res || res.errors) {
                     document.getElementById("notification").textContent = "Connexion impossible, "
                 }
                 else{

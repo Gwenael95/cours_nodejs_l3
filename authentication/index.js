@@ -18,6 +18,8 @@ import { startMongoose } from "./db/mongo.js"
 import { Server as SioServer } from "socket.io"
 import rateLimit from "express-rate-limit"
 import cookieParser from 'cookie-parser'
+import passport from 'passport'
+import './src/auth/passport.js'
 
 const limiter = rateLimit({
 	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
@@ -50,6 +52,8 @@ function startWebServer() {
 	})
 
 	app.use(cookieParser())
+	app.use(passport.initialize())
+
 	app.use(limiter)
 
 	app.use((req, res, next) => {
