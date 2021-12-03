@@ -78,18 +78,17 @@ router.get('/deleteUserProfile', limiter, redirectNotAuth, decodeToken, deleteUs
 
 
 router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
+router.get("/home/admin/:userId", limiter, redirectNotAuth, decodeToken, userForm)
+router.get("/home/admin", limiter, redirectNotAuth, decodeToken, admin)
+
 router.get('/logout', limiter,  logout) //@todo add a button to call logout
 // espace admin
 
 router.get("/user", limiter, redirectNotAuth, getAllUsersController)
 router.get("/user/:mail", limiter, redirectNotAuth, getOneUserController)
-router.get("/home/admin", limiter, redirectNotAuth, decodeToken, admin)
 
 router.get("/user/deleteUserProfile", limiter, redirectNotAuth, deleteUserController)
 router.delete("/user/deleteUserProfile", limiter, tryAuth, getUserToDeleteProfile)
-
-router.get("/home/admin/:userId", limiter, userForm)
-router.patch("/home/admin/:userId", limiter, userEdit)
 
 
 router.post("/user", postUserController)
@@ -104,6 +103,9 @@ router.post("/user", limiter, redirectNotAuth,  postUserController) // api call
 router.patch("/user", limiter, redirectNotAuth, patchUserController) // update partially resources
 router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)
 //router.put("/user", limiter, redirectNotAuth, putUserController) // replace resources
+
+
+router.patch("/admin/user", limiter, redirectNotAuth, decodeToken, patchUserController) // update partially resources
 
 
 

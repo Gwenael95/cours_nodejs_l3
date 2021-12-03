@@ -74,7 +74,7 @@ export async function getUserByMail(mail) {
 
 export async function getUserById(id) {
     try {
-        const user = await User.findById(id)
+        const user = await User.findById(id).exec()
         return user;
     }catch(err){
         return err
@@ -168,6 +168,19 @@ export async function updateUserProfile(oldMail, oldPassword , pseudo, password,
         return err
     }
 }
+
+export async function updateUserProfileByAdmin(oldMail , pseudo, password, mail) {
+    try {
+        const hashedPassword = passwordHash.generate(password);
+        const user = await User.findOneAndUpdate({
+            mail: oldMail
+        }, { pseudo: pseudo, password: hashedPassword, mail: mail })
+        return user;
+    }catch(err){
+        return err
+    }
+}
+
 
 export async function deleteUserProfile(mail, password) {
     try {

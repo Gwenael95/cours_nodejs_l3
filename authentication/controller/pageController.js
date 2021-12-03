@@ -1,4 +1,5 @@
 import { getAllUser, getUserById, UserDelete } from '../services/users.services.js'
+import {ObjectId} from "mongodb";
 
 function getCurrentUser(req){
 	if(req.user){
@@ -65,22 +66,25 @@ export function deleteUserController(req, res) {
 
 
 export async function userForm(req, res){
-	try { 
-	  const userId = req.params.userId;
-	  const user = await getUserById(userId)
-	  console.log(user);
-	  res.render('adminUserForm.html', { user })}
+	//http://127.0.0.1:8088/home/admin/61a8179615fd196e339b9b3a
+	try {
+		const currentUser = getCurrentUser(req)
+
+		if (currentUser.isAdmin){
+			const userId = req.params.userId;
+			const user = await getUserById(new ObjectId(userId))
+			console.log(user);
+			return res.render('adminUserForm.html', {
+				title:"Mis à jour de l'utilisateur " + user.pseudo,
+				user,
+				userId :userId
+			})
+		}
+		res.redirect("/home")
+	}
 	  catch(err){
 		  console.log(err, '-------------')
 	  }
-  }
-
-  export async function userEdit(req, res){
-	  const userId = req.params.userId;
-	  const userData = req.query
-	  console.log(userId)
-	  console.log(userData)
-	  res.redirect('/home/admin')
   }
 
 /**

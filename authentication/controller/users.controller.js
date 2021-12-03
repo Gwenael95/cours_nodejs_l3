@@ -1,5 +1,7 @@
-import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser, checkUpdateUserProfile} from "../validator.js";
-import {createUser, authUser, getUserByMail, resetUserPasswordById,  updateUserProfile, deleteUserProfile, getAllUser} from "../services/users.services.js";
+import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser, checkUpdateUserProfile,
+    checkUpdateUserProfileByAdmin} from "../validator.js";
+import {createUser, authUser, getUserByMail, resetUserPasswordById,  updateUserProfile, deleteUserProfile, getAllUser,
+    updateUserProfileByAdmin} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
@@ -23,7 +25,8 @@ export async function authUserPassport(req, res){
     const payload = {
         mail: user.mail,
         pseudo: user.pseudo,
-        role:user.role,
+        role: user.role,
+        isAdmin: user.role === "admin",
         expiration: Date.now() + parseInt(config.JWT_EXPIRATION_TIME)
     }
 
@@ -137,7 +140,7 @@ export async function postUserController(req, res){
     console.log(config)
     if(check !== true || body.password !== body.confirmPassword){
         return res.status(400).json({
-            error : check
+            errors : check
         }) // bad request
     }
     const user = await createUser(body.pseudo, body.password, body.mail)
@@ -149,6 +152,21 @@ export async function postUserController(req, res){
     res.json(user)
 }
 
-export function patchUserController(req, res){}
+export async function patchUserController(req, res){
+    if (!req.user.isAdmin){
+        return res.status(401).json({
+            errors : "unauthorized"
+        }) // bad request
+    }
+    const body = req.body
+    const check = checkUpdateUserProfileByAdmin(body)
+    if(!check || body.confirmPassword !== body.password){
+        return res.status(400).json({
+            errors : check
+        }) // bad request
+    }
+    const user = await updateUserProfileByAdmin(body.oldMail,  body.pseudo, body.password, body.mail)
+    res.json(user)
+}
 
 export function putUserController(req, res){}

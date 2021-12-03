@@ -54,9 +54,21 @@ const schemaUpdateUserProfile = {
     confirmPassword : { type : "string", min : 4, max : 80 },
     oldPassword:{ type : "string", min : 4, max : 80 },
 }
+/**
+     * Schema of data expected when an admin update a user profile
+ * @type {{password: {min: number, max: number, type: string}, mail: {min: number, max: number, type: string}, oldPassword: {min: number, max: number, type: string}, confirmPassword: {min: number, max: number, type: string}, pseudo: {min: number, max: number, type: string}}}
+ */
+const schemaUpdateUserProfileByAdmin = {
+    pseudo : { type : "string", min : 4, max : 80 },
+    mail : { type : "string", min : 4, max : 80 },  // pattern maybe to enhanced
+    password : { type : "string", min : 4, max : 80 },
+    oldMail:{ type : "string", min : 4, max : 80 },
+    confirmPassword : { type : "string", min : 4, max : 80 }
+}
 
 export const checkPostUsers = v.compile(schemaPostUser)
 export const checkLoginUser = v.compile(schemaLoginUser)
 export const checkResetPasswordUser = v.compile(schemaResetPasswordUser)
 export const checkPasswordUser = v.compile(schemaForgotPasswordUser)
 export const checkUpdateUserProfile = v.compile(schemaUpdateUserProfile)
+export const checkUpdateUserProfileByAdmin = v.compile(schemaUpdateUserProfileByAdmin)
