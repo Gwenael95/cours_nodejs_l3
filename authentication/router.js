@@ -88,10 +88,6 @@ router.get("/home/admin/:userId", limiter, redirectNotAuth, decodeToken, userFor
 router.get('/logout', limiter,  logout) //@todo add a button to call logout
 // espace admin
 
-
-
-
-
 router.get("/user", limiter, redirectNotAuth, getAllUsersController)
 router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to get only one element
 router.get("/user/:mail", limiter, redirectNotAuth, getOneUserController)

@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Socket.io</title>
+    <script src="./commonFunction.js"></script>
 
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <aside>
         <ul id="tabs">
-            <li class="active" data-room="Lacoding"># La coding</li>
-            <li data-room="Aidez moi"># Aidez moi</li>
+            <li class="active" data-room="Lacoding"># La Coding</li>
+            <li data-room="Aidez moi"># Aidez-moi</li>
             <li data-room="Divers"># Divers</li>
+            <li id="account"><a class="account" href="/updateUserProfile">Mon Compte</a></li>
+            {% if user.isAdmin  %}
+            <li id="adminSpace"><a class="adminSpace" href="/home/admin">Espace admin</a></li>
+            {% endif %}
+            <li id="disconnect">Déconnexion</li>
         </ul>
     </aside>
     <main>

@@ -49,10 +49,10 @@ Chat.sync();
 User.sync();
 //endregion
 
-const limiter = rateLimit({
+/* const limiter = rateLimit({
 	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
 	max: 50
-})
+}) */
 
 
 startMongoose()
@@ -166,7 +166,7 @@ function startWebServer() {
 	app.use(cookieParser())
 	app.use(passport.initialize())
 
-	app.use(limiter)
+	// app.use(limiter)
 
 	app.use((req, res, next) => {
 		console.log(req.url)

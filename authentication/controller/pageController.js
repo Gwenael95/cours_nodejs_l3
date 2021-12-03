@@ -15,7 +15,6 @@ function getCurrentUser(req){
 	}
 }
 
-//@todo rename file as pages.pageController.js
 /**
  * Controller to display home page
  * @param req
@@ -43,6 +42,11 @@ export async function admin(req, res){
 	res.redirect("/home")
 }
 
+/**
+ * Controller to display delete profile page for admin
+ * @param req 
+ * @param res 
+ */
 export async function deleteUserControllerAdmin(req, res){
   try {
   	const userId = req.body.userId;
@@ -54,6 +58,11 @@ export async function deleteUserControllerAdmin(req, res){
 	}
 }
 
+/**
+ * Controller to display delete profile page for users
+ * @param req 
+ * @param res 
+ */
 export function deleteUserController(req, res) {
 	const currentUser = getCurrentUser(req)
 	console.log(currentUser)
@@ -101,13 +110,12 @@ export function signInController(req, res){
 
 export async function chatController(req, res){
 	const currentUser = getCurrentUser(req)
-console.log(req.user)
+	console.log(req.user)
 	res.render("chat.html", {
 		title : "Chat",
 		user:currentUser
 	})
 }
-
 
 /**
  * Controller to display forgot password page

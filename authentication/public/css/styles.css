@@ -81,3 +81,24 @@ button{
     background-color: #839c49;
     color: white;
 }
+
+#account {
+    background-color: #FFF;
+}
+.account {
+    text-decoration: none;
+    color : #000;
+}
+
+#tabs li#disconnect {
+    color : red;
+}
+
+#admin {
+    background-color: #393c43;
+}
+
+.adminSpace {
+    color: #FFF;
+    text-decoration: none;
+}

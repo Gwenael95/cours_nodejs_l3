@@ -126,3 +126,9 @@ function publishUser(user){
     let texte = `<div id="user-${user.pseudo}">${user.pseudo}</div>`
     document.querySelector("#userList").innerHTML += texte;
 }
+
+disconnect = document.querySelector('#disconnect');
+disconnect.addEventListener('click', () => {
+    socket.disconnect();
+    goToUrl('/logout');
+})

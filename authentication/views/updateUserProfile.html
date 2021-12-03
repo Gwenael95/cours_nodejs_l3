@@ -15,36 +15,32 @@
     </header>
     <main>
         <form class="flexCenter flexColumn form">
-            <div>
-                <input type="text" id="pseudo" name="pseudo" placeholder="pseudo" value="{{pseudo}}">
+            <div class="flexBetween">
                 <label for="pseudo">Pseudo</label>
+                <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" value="{{pseudo}}">
             </div>
-            <div>
-                <input type="email" id="email" name="email" placeholder="email"  value="{{mail}}">
+            <div class="flexBetween">
                 <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Email"  value="{{mail}}">
             </div>
-            <div>
+            <div class="flexBetween">
+                <label for="currentPassword">Mot de passe</label>
                 <input type="password" id="currentPassword" name="currentPassword" placeholder="Mot de passe actuel" >
-                <label for="currentPassword">Mot de passe Actuel</label>
             </div>
-            <div>
-                <input type="password" id="password" name="password" placeholder="Mot de passe" >
+            <div class="flexBetween">
                 <label for="password">Nouveau mot de passe</label>
+                <input type="password" id="password" name="password" placeholder="Nouveau mot de passe" >
             </div>
-            <div>
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmer mot de passe">
-                <label for="confirmPassword">Confirmer votre mot de passe</label>
+            <div class="flexBetween">
+                <label for="confirmPassword">Confirmez votre mot de passe</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmez mot de passe">
             </div>
             <div class="flexCenter txCenter" style="height: 30px;" id="notification">
 
             </div>
             <input type="button" id="updateProfileBtn" value="Mettre à jour">
+            <input type="button" id="cancelBtn" value="Annuler">
         </form>
-        <div class="width100 flexCenter">
-            <a href="/login">
-                Déjà un compte? se connecter.
-            </a>
-        </div>
     </main>
     <footer></footer>
 
@@ -56,7 +52,12 @@
             resetUserData();
         })
 
+        cancelBtn = document.querySelector('#cancelBtn');
+        cancelBtn.addEventListener('click', () => {
+            goToUrl('/chat');
+        })
 
+        
         async function resetUserData(){
             if (getData('password') === getData('confirmPassword')) {
                 const body = JSON.stringify({
