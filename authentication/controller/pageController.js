@@ -1,6 +1,12 @@
 import { getAllUser, getUserById, UserDeleteById } from '../services/users.services.js'
 import {ObjectId} from "mongodb";
 
+/**
+ * Return the current user, get thanks to the token.
+ * require to call 'decodeToken' middleware
+ * @param req
+ * @return {null|{role: string | {default: string, type: StringConstructor} | boolean | RTCDtlsRole | RTCIceRole, mail: *, isAdmin: boolean, pseudo: *}}
+ */
 function getCurrentUser(req){
 	if(req.user){
 		return {
@@ -16,7 +22,8 @@ function getCurrentUser(req){
 }
 
 /**
- * Controller to display home page
+ * Controller to display home page.
+ * require to call 'decodeToken' middleware
  * @param req
  * @param res
  */
@@ -28,9 +35,15 @@ export function homeController(req, res){
 	})
 }
 
+/**
+ * Display admin crud interface if the user is an admin. else, redirect him to home
+ * require to call 'decodeToken' middleware
+ * @param req
+ * @param res
+ * @return {Promise<void|undefined>}
+ */
 export async function admin(req, res){
 	const currentUser = getCurrentUser(req)
-
 	if (currentUser.isAdmin){
 		const users = await getAllUser()
 		return res.render("crud.html", {
@@ -43,14 +56,16 @@ export async function admin(req, res){
 }
 
 /**
- * Controller to display delete profile page for admin
- * @param req 
- * @param res 
+ * Return list of user in DB after deleting one user thanks to his id.
+ * @param req
+ * @param res
+ * @return {Promise<void>}
  */
 export async function deleteUserControllerAdmin(req, res){
   try {
   	const userId = req.body.userId;
     await UserDeleteById(userId)
+
     const users = await getAllUser()
     res.render('partial.users.html', { users })}
 	catch(err){
@@ -59,9 +74,10 @@ export async function deleteUserControllerAdmin(req, res){
 }
 
 /**
- * Controller to display delete profile page for users
- * @param req 
- * @param res 
+ * Display user's delete profile page
+ * require to call 'decodeToken' middleware
+ * @param req
+ * @param res
  */
 export function deleteUserController(req, res) {
 	const currentUser = getCurrentUser(req)
@@ -73,7 +89,13 @@ export function deleteUserController(req, res) {
 }
 
 
-
+/**
+ * Display admin form to update user data. if is not an admin, redirect to home
+ * require to call 'decodeToken' middleware
+ * @param req
+ * @param res
+ * @return {Promise<void|undefined>}
+ */
 export async function userForm(req, res){
 	//http://127.0.0.1:8088/home/admin/61a8179615fd196e339b9b3a
 	try {
@@ -97,17 +119,23 @@ export async function userForm(req, res){
   }
 
 /**
- * Controller to display sign in page
+ * Controller to display sign in page to a new user
  * @param req
  * @param res
  */
 export function signInController(req, res){
-	console.log(req.query)
 	res.render("signIn.html", {
 		title : "S'inscrire",
 	})
 }
 
+/**
+ * Display chat interface.
+ * require to call 'decodeToken' middleware
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
 export async function chatController(req, res){
 	const currentUser = getCurrentUser(req)
 	console.log(req.user)
@@ -123,7 +151,6 @@ export async function chatController(req, res){
  * @param res
  */
 export function forgotPasswordController(req, res){
-	console.log(req.query)
 	res.render("forgotPassword.html", {
 		title : "Mot de passe oublié"
 	})
@@ -143,9 +170,14 @@ export function resetPasswordController(req, res){
 	})
 }
 
+/**
+ * Display page to update our data as a user.
+ * require to call 'decodeToken' middleware
+ * @param req
+ * @param res
+ */
 export function updateProfileController(req, res){
 	const currentUser = getCurrentUser(req)
-
 	console.log(currentUser)
 	res.render("updateUserProfile.html", {
 		title : "Mettre à jour mon profil",
@@ -155,21 +187,13 @@ export function updateProfileController(req, res){
 }
 
 /**
- * Controller to display log in page
+ * Controller to display a log in page.
  * @param req
  * @param res
  */
 export function logInController(req, res){
-	console.log(req.query)
 	res.render("login.html", {
 		title : "Se connecter",
-	})
-}
-
-export function formController(req, res){
-	console.log(req.body)
-	res.json({
-		success:true,
 	})
 }
 

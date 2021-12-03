@@ -70,10 +70,3 @@ export function logInController(req, res){
 		title : "Se connecter",
 	})
 }
-
-export function formController(req, res){
-	console.log(req.body)
-	res.json({
-		success:true,
-	})
-}

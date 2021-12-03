@@ -11,6 +11,14 @@ Controller functions to get the requested data from the models, create an HTML p
  and return it to the user to view in the browser.
  */
 
+/**
+ * This controller get user from res.locals.user, created when using passportLogin.
+ * Here we insert a payload into a token.
+ * it will be send in res.cookies with key 'jwt'.
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
 export async function authUserPassport(req, res){
     let user
 
@@ -57,9 +65,12 @@ export async function logout(req, res){
     }
 }
 
-
-
-
+/**
+ * This controller get a user in DB and send a mail for forgotten password issue.
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
 export async function getUserAndSendMail(req, res){
     const body = req.body
     const check = checkPasswordUser(body)
@@ -78,6 +89,12 @@ export async function getUserAndSendMail(req, res){
     res.json(user)
 }
 
+/**
+ * This controller reset user password depending on his id
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
 export async function getUserAndResetPassword(req, res){
     const body = req.body
     const check = checkResetPasswordUser(body)
@@ -90,6 +107,13 @@ export async function getUserAndResetPassword(req, res){
     res.json(userUpdate)
 }
 
+/**
+ * This controller update an user profile.
+ * It belongs to an user account, not used it when admin updating user
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
 export async function getUserProfileForUpdates(req, res){
     const body = req.body
     const check = checkUpdateUserProfile(body)
@@ -102,6 +126,12 @@ export async function getUserProfileForUpdates(req, res){
     res.json(user)
 }
 
+/**
+ * This controller delete an user depending on his mail and password
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
 export async function getUserToDeleteProfile(req, res) {
     const body = req.body;
     const check = checkLoginUser(body);
@@ -114,23 +144,38 @@ export async function getUserToDeleteProfile(req, res) {
     res.json(user);
 }
 
+/**
+ * This controller is used to get all user in DB (admin and user)
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
 export async function getAllUsersController(req, res){
     const user = await getAllUser()
     res.json(user)
 }
 
+/**
+ * This controller get one user depending on the mail in param
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
 export async function getOneUserController(req, res){
     const user = await getUserByMail(req.params.mail)
     res.json(user)
 }
 
+/**
+ * This controller add a new user in DB.
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
 export async function postUserController(req, res){
     const body = req.body
     const check = checkPostUsers(body)
     console.log("post user")
-    console.log(body)
-    console.log(check)
-    console.log(config)
     if(check !== true || body.password !== body.confirmPassword){
         return res.status(400).json({
             errors : check
@@ -145,6 +190,12 @@ export async function postUserController(req, res){
     res.json(user)
 }
 
+/**
+ * This controller is used to update a user profile as an admin.
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
 export async function patchUserController(req, res){
     if (!req.user.isAdmin){
         return res.status(401).json({
