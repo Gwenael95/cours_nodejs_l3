@@ -10,7 +10,7 @@ import { homeController,
 	userEdit,
 	forgotPasswordController,
 	deleteUserControllerAdmin
-} from './controller.js'
+} from './controller/pageController.js'
 import {
 	getAllUsersController,
 	getOneUserController,
@@ -21,17 +21,12 @@ import {
 	getUserAndSendMail,
 	getUserAndResetPassword,
 	logout,
-	hasToken,
-	redirectNotAuth,
 	getUserProfileForUpdates,
 	getUserToDeleteProfile,
-	tryAuth
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
-import {passPortLogin, decodeToken} from "./middlewares/security.js"
-import passport from "passport"
-import jwt from "jsonwebtoken"
-import config from "./config.js";
+import {passPortLogin, decodeToken, redirectNotAuth, tryAuth} from "./middlewares/security.js"
+
 
 // limit nb of request from a user
 const limiter = rateLimit({
@@ -45,7 +40,7 @@ const limiter = rateLimit({
  * @param res
  * @param next
  */
-const redirect = function(req, res, next) {
+const defaultRedirection = function(req, res, next) {
 	/*if ( req.isAuthenticated() ) {
 		next();
 		return
@@ -58,7 +53,7 @@ const redirect = function(req, res, next) {
 const router= express.Router()
 
 
-router.get("/", redirect)
+router.get("/", defaultRedirection)
 
 //region route doesn't required token
 router.get("/login", limiter, logInController)
@@ -72,14 +67,18 @@ router.post("/forgotPassword", limiter,  getUserAndSendMail)
 
 router.get("/resetPassword", limiter, resetPasswordController)
 router.patch("/resetPassword", limiter , getUserAndResetPassword)
-
-router.get("/updateUserProfile", limiter, updateProfileController)
-router.get('/deleteUserProfile', limiter, deleteUserController)
 //endregion
+
+router.get("/updateUserProfile", limiter, redirectNotAuth, decodeToken, updateProfileController)
+router.patch("/updateUserProfile", limiter, redirectNotAuth, decodeToken, getUserProfileForUpdates)
+//@todo route patch to set pseudo only
+
+
+router.get('/deleteUserProfile', limiter, redirectNotAuth, decodeToken, deleteUserController)
+
 
 router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
 router.get('/logout', limiter,  logout) //@todo add a button to call logout
-router.get('/protected', limiter, passport.authenticate('jwt', { session: false }), hasToken) // to test token
 // espace admin
 
 router.get("/user", limiter, redirectNotAuth, getAllUsersController)
@@ -94,7 +93,6 @@ router.patch("/home/admin/:userId", limiter, userEdit)
 
 
 router.post("/user", postUserController)
-router.patch("/user/updateUserProfile", getUserProfileForUpdates)
 router.patch("/user", patchUserController) // update partially resources
 
 
@@ -109,7 +107,7 @@ router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)
 
 
 
-//router.get("*", limiter, redirect) // for all route not defined before, redirect to login
+//router.get("*", limiter, defaultRedirection) // for all route not defined before, redirect to login by default
 
 export default router // module.exports
 

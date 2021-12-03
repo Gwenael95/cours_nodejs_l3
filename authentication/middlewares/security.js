@@ -3,6 +3,7 @@ import { authUser } from "../services/users.services.js";
 import passwordHash from "password-hash";
 import jwt from "jsonwebtoken";
 import config from "../config.js";
+import passport from "passport";
 
 /**
  * This function get a user from DB, and check is data to the ones send by user.
@@ -52,9 +53,23 @@ export const decodeToken = function(req, res, next) {
                 return res.status(401).json('token_not_valid');
             } else {
                 req.user = decoded;
-                const expiresIn = 24 * 60 * 60 * 1000;
             }
         });
     }
     next()
+}
+
+
+export function redirectNotAuth(req, res, next){
+    console.log("redirect not auth")
+    passport.authenticate('jwt', {
+        //successRedirect: '/home',
+        failureRedirect: '/login',
+        session: false
+    })(req, res, next)
+}
+export function tryAuth(req, res, next){
+    passport.authenticate('jwt',{
+        session:false
+    })(req, res, next)
 }

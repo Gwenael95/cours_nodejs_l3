@@ -1,4 +1,4 @@
-import { getAllUser, getUserById, UserDelete } from './services/users.services.js'
+import { getAllUser, getUserById, UserDelete } from '../services/users.services.js'
 
 function getCurrentUser(req){
 	if(req.user){
@@ -6,6 +6,7 @@ function getCurrentUser(req){
 			pseudo : req.user.pseudo,
 			role : req.user.role,
 			isAdmin: req.user.role === "admin",
+			mail: req.user.mail
 		}
 	}
 	else{
@@ -13,7 +14,7 @@ function getCurrentUser(req){
 	}
 }
 
-//@todo rename file as pages.controller.js
+//@todo rename file as pages.pageController.js
 /**
  * Controller to display home page
  * @param req
@@ -48,15 +49,16 @@ export async function deleteUserControllerAdmin(req, res){
     const users = await getAllUser()
     res.render('partial.users.html', { users })}
 	catch(err){
-		console.log(err, '4444444444444444444444')
+		console.log("delete user error : \n", err)
 	}
 }
+
 export function deleteUserController(req, res) {
-	console.log(req.body);
+	const currentUser = getCurrentUser(req)
+	console.log(currentUser)
 	res.render("deleteUserProfile.html", {
-		title: "Supprimer mon compte",
-		mail: req.query.mail,
-		password: req.query.password,
+		title: "Supprimer mon compte - " + currentUser.pseudo,
+		mail: currentUser.mail
 	})
 }
 
@@ -120,12 +122,13 @@ export function resetPasswordController(req, res){
 }
 
 export function updateProfileController(req, res){
-	console.log(req.query)
+	const currentUser = getCurrentUser(req)
+
+	console.log(currentUser)
 	res.render("updateUserProfile.html", {
 		title : "Mettre à jour son profil",
-		mail: req.query.mail,
-		password: req.query.password,
-		pseudo: req.query.pseudo,
+		mail: currentUser.mail,
+		pseudo: currentUser.pseudo,
 	})
 }
 

@@ -1,16 +1,15 @@
-import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser} from "../validator.js";
+import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser, checkUpdateUserProfile} from "../validator.js";
 import {createUser, authUser, getUserByMail, resetUserPasswordById,  updateUserProfile, deleteUserProfile, getAllUser} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
-import passport from "passport";
 
 /*
 Controller functions to get the requested data from the models, create an HTML page displaying the data,
  and return it to the user to view in the browser.
  */
 
-export async function authUserPassport(req, res, next){
+export async function authUserPassport(req, res){
     let user
 
     if (res.locals.user) {
@@ -62,24 +61,6 @@ export async function logout(req, res){
     }
 }
 
-export async function hasToken(req, res){
-    res.send(200).json({
-        message: 'welcome to the protected route!'
-    })
-}
-export function redirectNotAuth(req, res, next){
-    console.log("redirect not auth")
-    passport.authenticate('jwt', {
-        //successRedirect: '/home',
-        failureRedirect: '/login',
-        session: false
-    })(req, res, next)
-}
-export function tryAuth(req, res, next){
-    passport.authenticate('jwt',{
-        session:false
-    })(req, res, next)
-}
 
 
 
@@ -115,13 +96,13 @@ export async function getUserAndResetPassword(req, res){
 
 export async function getUserProfileForUpdates(req, res){
     const body = req.body
-    const check = checkLoginUser(body)
-    if(!check){
+    const check = checkUpdateUserProfile(body)
+    if(!check || body.password !==body.confirmPassword){
         return res.status(400).json({
             error : check
         }) // bad request
     }
-    const user = await updateUserProfile(body.pseudo, body.password, body.mail)
+    const user = await updateUserProfile(req.user.mail, req.body.oldPassword, body.pseudo, body.password, body.mail)
     res.json(user)
 }
 

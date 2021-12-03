@@ -139,15 +139,31 @@ export function UserDelete(user){
 }
 
 
-export async function updateUserProfile(pseudo, password, mail) {
+/**
+ * Update all user data (except role).
+ * Be aware, should only be used if the user is authenticated
+ * @param oldMail {String} : old user's mail
+ * @param oldPassword {String} : old user's password
+ * @param pseudo {String} : new user's pseudo
+ * @param password {String} : new user's password
+ * @param mail {String} : new user's mail
+ * @return {Promise<any>}
+ */
+export async function updateUserProfile(oldMail, oldPassword , pseudo, password, mail) {
     try {
-        const hashedPassword = passwordHash.generate(password);
-        const newEmail = mail;
-        const newPseudo = pseudo;
-        const user = await User.findOneAndUpdate({
-            mail
-        }, { pseudo: newPseudo, password: hashedPassword, mail: newEmail })
-        return user;
+        const currentUser = await User.findOne({mail:oldMail});
+        console.log(currentUser)
+        if (passwordHash.verify(oldPassword, currentUser.password )) {
+            const hashedPassword = passwordHash.generate(password);
+            const user = await User.findOneAndUpdate({
+                mail: oldMail
+            }, { pseudo: pseudo, password: hashedPassword, mail: mail })
+            return user;
+        }
+        else{
+            return {errors: "Une erreur est survenue."};
+        }
+
     }catch(err){
         return err
     }

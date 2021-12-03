@@ -5,29 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./commonFunction.js"></script>
 </head>
 <body>
-    <h1>{{title}}</h1>
-    <form class="flexCenter flexColumn form">
-        <div>
-            <label for="pseudo">Pseudo</label>
-            <input type="text" id="pseudo" name="pseudo" placeholder="pseudo" value="{{pseudo}}">
+    <header class="flexCenter">
+        <h1>{{ title }}</h1>
+    </header>
+    <main>
+        <form class="flexCenter flexColumn form">
+            <div>
+                <input type="text" id="pseudo" name="pseudo" placeholder="pseudo" value="{{pseudo}}">
+                <label for="pseudo">Pseudo</label>
+            </div>
+            <div>
+                <input type="email" id="email" name="email" placeholder="email"  value="{{mail}}">
+                <label for="email">Email</label>
+            </div>
+            <div>
+                <input type="password" id="currentPassword" name="currentPassword" placeholder="Mot de passe actuel" >
+                <label for="currentPassword">Mot de passe Actuel</label>
+            </div>
+            <div>
+                <input type="password" id="password" name="password" placeholder="Mot de passe" >
+                <label for="password">Nouveau mot de passe</label>
+            </div>
+            <div>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmer mot de passe">
+                <label for="confirmPassword">Confirmer votre mot de passe</label>
+            </div>
+            <div class="flexCenter txCenter" style="height: 30px;" id="notification">
+
+            </div>
+            <input type="button" id="updateProfileBtn" value="Mettre à jour">
+        </form>
+        <div class="width100 flexCenter">
+            <a href="/login">
+                Déjà un compte? se connecter.
+            </a>
         </div>
-        <div>
-            <label for="email">Email</label>
-            <input type="mail" id="email" name="email" placeholder="email"  value="{{mail}}">
-        </div>
-        <div>
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" placeholder="password"  value="{{password}}">
-        </div>
-        <div>
-            <label for="confirmPassword">Confirmer votre mot de passe</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="confirmPassword">
-        </div>
-        <div style="height: 30px; font-weight: bold;" id="notification"></div>
-        <input type="button" id="updateProfileBtn" value="Mettre à jour">
-    </form>
+    </main>
+    <footer></footer>
+
 
 
     <script>
@@ -36,22 +56,6 @@
             resetUserData();
         })
 
-        function getData(input) {
-            return document.getElementById(input).value;
-        }
-
-        /**
-         * @param promise : Promise<Response> :
-         */
-         function handleFetchLogJson(promise){
-            return promise
-                .then(response => response.json())
-                .then(response => {
-                    console.log(response);
-                    return response
-                })
-                .catch(err => console.error(err));
-        }
 
         async function resetUserData(){
             if (getData('password') === getData('confirmPassword')) {
@@ -59,8 +63,10 @@
                     mail: getData('email'),
                     pseudo: getData('pseudo'),
                     password: getData('password'),
+                    confirmPassword:getData('confirmPassword'),
+                    oldPassword:getData('currentPassword')
                 })
-                const res = await handleFetchLogJson(fetch( '/user/updateUserProfile', {
+                const res = await handleFetchLogJson(fetch( '/updateUserProfile', {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -74,7 +80,8 @@
                     document.getElementById("notification").textContent = "Profil mis à jour."
                     //@todo redirection
                 }
-            } else {
+            }
+            else {
                 document.getElementById("notification").textContent = "Les mots de passe ne correspondent pas."
             }
         }
