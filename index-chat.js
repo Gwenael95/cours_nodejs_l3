@@ -1,6 +1,10 @@
+// CECI EST LE SERVEUR
+
+
 // On instancie express
 const express = require("express");
 const app = express();
+
 
 // On charge "path" outil qui permet de résoudre les chemins
 const path = require("path");
@@ -16,6 +20,7 @@ const io = require("socket.io")(http);
 
 // On va charger sequelize
 const Sequelize = require("sequelize");
+const { SELECT } = require("sequelize/dist/lib/query-types");
 
 // On fabrique le lien de la base de données
 const dbPath = path.resolve(__dirname, "chat.sqlite");
@@ -57,14 +62,29 @@ io.on("connection", (socket) => {
 
         // On envoie tous les messages du salon
         Chat.findAll({
-            attributes: ["id", "name", "message", "room", "createdAt"],
+            attributes: ["id", "name", "message", "room", "createdAt"],     
             where: {
-                room: room
-            }
+
+                room: room,
+            },
+            order: [
+             
+
+            ], 
+            limit : 2
+          
         }).then(list => {
             socket.emit("init_messages", {messages: JSON.stringify(list)});
+            
         });
+        
+
     });
+
+
+
+
+
 
     // On écoute les sorties dans les salles
     socket.on("leave_room", (room) => {
@@ -87,6 +107,7 @@ io.on("connection", (socket) => {
         }).catch(e => {
             console.log(e);
         });    
+
     });
 
     // On écoute les messages "typing"
@@ -94,6 +115,9 @@ io.on("connection", (socket) => {
         socket.to(msg.room).emit("usertyping", msg);
     })
 });
+
+
+
 
 // On va demander au serveur http de répondre sur le port 8080
 http.listen(8080, () => {

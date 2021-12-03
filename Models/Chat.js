@@ -7,5 +7,9 @@ module.exports = (sequelize, DataTypes) => {
         name: Sequelize.STRING,
         message: Sequelize.STRING,
         room: Sequelize.STRING
+        
     });
+   
 };
+
+

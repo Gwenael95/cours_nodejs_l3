@@ -1,5 +1,6 @@
 // On se connecte au serveur socket
 const socket = io();
+let lastMessage = new Array();
 
 // On gère l'arrivée d'un nouvel utilisateur
 socket.on("connect", () => {
@@ -25,7 +26,16 @@ window.onload = () => {
             message: message.value,
             room: room,
             createdAt: createdAt
+            
+    
         });
+
+
+        socket.on('chat_message', function (message) {
+            message.username = loggedUser.username;
+            io.emit('chat_message', message);
+
+          });
 
         // On efface le message
         document.querySelector("#message").value = "";
@@ -34,6 +44,7 @@ window.onload = () => {
     // On écoute l'évènement "received_message"
     socket.on("received_message", (msg) => {
         publishMessages(msg);
+        
     })
 
     // On écoute le clic sur les onglets
