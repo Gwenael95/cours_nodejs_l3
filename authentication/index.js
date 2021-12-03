@@ -95,6 +95,7 @@ function startWebServer() {
 
 			User.findAll({
 				attributes: [ "pseudo", "mail", "room", "connectionDate"],
+				group:["pseudo"]
 			}).then(list => {
 				socket.emit("init_users", {users: JSON.stringify(list)});
 			});

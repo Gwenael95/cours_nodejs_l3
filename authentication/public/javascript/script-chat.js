@@ -123,6 +123,6 @@ function publishMessages(msg){
 
 function publishUser(user){
     console.log(user)
-    let texte = `<div id="user-${user.pseudo}">${user.pseudo}</div>`
+    let texte = `<div id="user-${user.pseudo}" style="cursor:pointer;">${user.pseudo}</div>`
     document.querySelector("#userList").innerHTML += texte;
 }
