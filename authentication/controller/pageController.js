@@ -44,7 +44,6 @@ export function homeController(req, res){
  */
 export async function admin(req, res){
 	const currentUser = getCurrentUser(req)
-
 	if (currentUser.isAdmin){
 		const users = await getAllUser()
 		return res.render("crud.html", {

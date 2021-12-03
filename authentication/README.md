@@ -14,6 +14,10 @@ Ce Github est réservé à un cours de NodeJS.
 afin de définir des modèles en applicant des validateurs 
 (exemple format du mail, unicité du mail ...).
 
+- Nous utilisons également une base de données sqllite et sequelize pour
+sauvegarder les données du chat (messages et user connecté) :
+mail, pseudo, date de l'envoi du message, ...
+
 - La gestion des token est réalisé via la librairie passport, afin
 d'authentifier un utilisateur lui donnant ou non l'accès complet au site
 en fonction de ses droits.
