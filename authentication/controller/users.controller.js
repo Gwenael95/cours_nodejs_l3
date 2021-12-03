@@ -46,10 +46,6 @@ export async function authUserPassport(req, res){
 }
 
 export async function logout(req, res){
-
-    console.log("logout  controller")
-    console.log(req)
-
     if (req.cookies['jwt']) {
         res
             .clearCookie('jwt')

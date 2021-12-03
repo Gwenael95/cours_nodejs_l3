@@ -101,7 +101,7 @@ export function signInController(req, res){
 
 export async function chatController(req, res){
 	const currentUser = getCurrentUser(req)
-
+console.log(req.user)
 	res.render("chat.html", {
 		title : "Chat",
 		user:currentUser

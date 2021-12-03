@@ -40,9 +40,13 @@ const sequelize = new Sequelize("database", "username", "password", {
 
 // On charge le modèle "Chat"
 import chatModel from "./client/Models/Chat.js"
+import userModel from  "./client/Models/User.js"
+
 const Chat = chatModel(sequelize, Sequelize.DataTypes);
+const User = userModel(sequelize, Sequelize.DataTypes);
 // On effectue le chargement "réèl"
 Chat.sync();
+User.sync();
 //endregion
 
 const limiter = rateLimit({
@@ -72,8 +76,36 @@ function startWebServer() {
 	io.on("connection", (socket) => {
 		console.log("Une connexion s'active");
 
+		socket.on("new_user", (data)=>{
+			console.log("#########################################     new user")
+			console.log(data)
+
+
+			const user = User.create({
+				pseudo: data.pseudo,
+				mail: data.mail,
+				room: data.room,
+				connectionDate: data.connectionDate
+			}).then(() => {
+				// L'user est stocké, on le relaie à tous les utilisateurs dans le salon correspondant
+				//io.in(msg.room).emit("received_message", msg);
+			}).catch(e => {
+				console.log(e);
+			});
+
+			User.findAll({
+				attributes: [ "pseudo", "mail", "room", "connectionDate"],
+			}).then(list => {
+				socket.emit("init_users", {users: JSON.stringify(list)});
+			});
+
+		})
+
 		// On écoute les déconnexions
 		socket.on("disconnect", () => {
+			//@todo remove user from user list
+			/*User.destroy({where:{
+				}})*/
 			console.log("Un utilisateur s'est déconnecté");
 		});
 
@@ -112,6 +144,7 @@ function startWebServer() {
 			}).then(() => {
 				// Le message est stocké, on le relaie à tous les utilisateurs dans le salon correspondant
 				io.in(msg.room).emit("received_message", msg);
+
 			}).catch(e => {
 				console.log(e);
 			});

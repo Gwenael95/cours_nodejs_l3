@@ -1,10 +1,17 @@
 // On se connecte au serveur socket
 const socket = io();
-
+const MAIN_SALON = "Lacoding"
 // On gère l'arrivée d'un nouvel utilisateur
 socket.on("connect", () => {
+    socket.emit("new_user", {
+        pseudo: document.getElementById("name").value,
+        mail: document.getElementById("mail").value,
+        room: MAIN_SALON,
+        connectionDate: new Date()
+    });
+
     // On émet un message d'entrée dans une salle
-    socket.emit("enter_room", "Lacoding");
+    socket.emit("enter_room", MAIN_SALON);
 });
 
 
@@ -36,6 +43,10 @@ window.onload = () => {
         publishMessages(msg);
     })
 
+    socket.on("new_user_saved", (user) => {
+        publishUser(user);
+    })
+
     // On écoute le clic sur les onglets
     document.querySelectorAll("#tabs li").forEach((tab) => {
         tab.addEventListener("click", function(){
@@ -60,6 +71,15 @@ window.onload = () => {
         if(data != []){
             data.forEach(donnees => {
                 publishMessages(donnees);
+            })
+        }
+    });
+
+    socket.on("init_users", data => {
+        let users = JSON.parse( data.users);
+        if(users && users.length){
+            users.forEach(user => {
+                publishUser(user);
             })
         }
     });
@@ -99,4 +119,10 @@ function publishMessages(msg){
     let texte = `<div><p>${msg.name} <small>${created.toLocaleDateString() + " à " + date2char(created.getHours()) + ":" + date2char(created.getMinutes()) + ":" + date2char(created.getSeconds())}</small></p><p>${msg.message}</p></div>`
 
     document.querySelector("#messages").innerHTML += texte;
+}
+
+function publishUser(user){
+    console.log(user)
+    let texte = `<div id="user-${user.pseudo}">${user.pseudo}</div>`
+    document.querySelector("#userList").innerHTML += texte;
 }
