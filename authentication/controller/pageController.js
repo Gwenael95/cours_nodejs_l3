@@ -27,13 +27,13 @@ function getCurrentUser(req){
  * @param req
  * @param res
  */
-export function homeController(req, res){
-	const currentUser = getCurrentUser(req)
-	res.render("home.html", {
-		title : "Acueil",
-		currentUser
-	})
-}
+// export function homeController(req, res){
+// 	const currentUser = getCurrentUser(req)
+// 	res.render("home.html", {
+// 		title : "Acueil",
+// 		currentUser
+// 	})
+// }
 
 /**
  * Display admin crud interface if the user is an admin. else, redirect him to home
@@ -52,7 +52,7 @@ export async function admin(req, res){
 			currentUser
 		})
 	}
-	res.redirect("/home")
+	res.redirect("/chat")
 }
 
 /**
@@ -111,7 +111,7 @@ export async function userForm(req, res){
 				userId :userId
 			})
 		}
-		res.redirect("/home")
+		res.redirect("/chat")
 	}
 	  catch(err){
 		  console.log(err, '-------------')

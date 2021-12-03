@@ -2,7 +2,7 @@
 {% if user.role == 'user' %}
   
 <div class="card tweet-element mb-2">
-  <a class="card-body" href="/home/admin/{{ user._id }}"> {{user.pseudo}} </a>
+  <a class="card-body" href="/admin/{{ user._id }}"> {{user.pseudo}} </a>
   <div>
       <button type="button" class="btn btn-danger" UserId= "{{user._id}}" > X</button>
   </div>

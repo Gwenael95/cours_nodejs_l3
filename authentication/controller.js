@@ -1,16 +1,16 @@
 import { getAllUser, getUserById, UserDelete } from './services/users.services.js'
 
-export function homeController(req, res){
-	const currentUser = {
-		nom : 'riles',
-		role : true
-	}
-	console.log(req.query)
-	res.render("home.html", {
-		title : "Home",
-		currentUser
-	})
-}
+// export function homeController(req, res){
+// 	const currentUser = {
+// 		nom : 'riles',
+// 		role : true
+// 	}
+// 	console.log(req.query)
+// 	res.render("home.html", {
+// 		title : "Home",
+// 		currentUser
+// 	})
+// }
 
 export async function admin(req, res){
 	const users = await getAllUser()
@@ -42,13 +42,13 @@ export async function userForm(req, res){
 	  }
   }
 
-  export async function userEdit(req, res){
-	  const userId = req.params.userId;
-	  const userData = req.query
-	  console.log(userId)
-	  console.log(userData)
-	  res.redirect('/home/admin')
-  }
+//   export async function userEdit(req, res){
+// 	  const userId = req.params.userId;
+// 	  const userData = req.query
+// 	  console.log(userId)
+// 	  console.log(userData)
+// 	  res.redirect('/home/admin')
+//   }
 
 export function signInController(req, res){
 	console.log(req.query)

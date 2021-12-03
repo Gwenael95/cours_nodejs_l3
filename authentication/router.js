@@ -1,5 +1,5 @@
 import express from "express"
-import { homeController,
+import {
 	signInController,
 	logInController,
 	updateProfileController,
@@ -23,6 +23,7 @@ import {
 	logout,
 	getUserProfileForUpdates,
 	getUserToDeleteProfile,
+	postUserCreateController
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
 import {passPortLogin, decodeToken, redirectNotAuth, tryAuth} from "./middlewares/security.js"
@@ -81,10 +82,11 @@ router.patch("/updateUserProfile", limiter, redirectNotAuth, decodeToken, getUse
 //endregion
 
 
-router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
-router.get("/home/admin", limiter, redirectNotAuth, decodeToken, admin)
-router.get("/home/admin/:userId", limiter, redirectNotAuth, decodeToken, userForm)
+// router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
 
+router.get("/admin", limiter, redirectNotAuth, decodeToken, admin)
+router.get("/admin/:userId", limiter, redirectNotAuth, decodeToken, userForm)
+router.post("/createUser", limiter, postUserCreateController) 
 router.get('/logout', limiter,  logout) //@todo add a button to call logout
 // espace admin
 
