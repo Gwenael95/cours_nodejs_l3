@@ -50,7 +50,7 @@ Chat.sync();
 User.sync();
 //endregion
 
-const limiter = rateLimit({
+ const limiter = rateLimit({
 	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
 	max: 50
 })

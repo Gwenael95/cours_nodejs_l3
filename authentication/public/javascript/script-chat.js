@@ -157,3 +157,9 @@ function removeUser(user){
     const userDiv = document.getElementById("user-" + user.pseudo)
     userDiv.parentNode.removeChild(userDiv)
 }
+
+disconnect = document.querySelector('#disconnect');
+disconnect.addEventListener('click', () => {
+    socket.disconnect();
+    goToUrl('/logout');
+})
