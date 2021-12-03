@@ -21,13 +21,13 @@
             <div id="writing"></div>
         </div>
         <form>
-            <input type="text" id="name" placeholder="Entrez votre nom">
+            <input type="text" id="name" placeholder="Entrez votre nom" value="{{user.pseudo}}">
             <input type="text" id="message" placeholder="Entrez votre message">
             <button>Envoyer</button>
         </form>
     </main>
     <!-- On va chercher socket.io.js -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/script-chat.js"></script>
+    <script src="javascript/script-chat.js"></script>
 </body>
 </html>

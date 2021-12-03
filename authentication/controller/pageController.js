@@ -99,6 +99,16 @@ export function signInController(req, res){
 	})
 }
 
+export async function chatController(req, res){
+	const currentUser = getCurrentUser(req)
+
+	res.render("chat.html", {
+		title : "Chat",
+		user:currentUser
+	})
+}
+
+
 /**
  * Controller to display forgot password page
  * @param req

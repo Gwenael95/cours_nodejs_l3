@@ -4,7 +4,7 @@ const socket = io();
 // On gère l'arrivée d'un nouvel utilisateur
 socket.on("connect", () => {
     // On émet un message d'entrée dans une salle
-    socket.emit("enter_room", "general");
+    socket.emit("enter_room", "Lacoding");
 });
 
 
@@ -89,9 +89,14 @@ window.onload = () => {
     });
 }
 
+
+function date2char(val){
+    return (val<10 ? "0" + val : val)
+}
+
 function publishMessages(msg){
     let created = new Date(msg.createdAt);
-    let texte = `<div><p>${msg.name} <small>${created.toLocaleDateString() + " à " + created.getHours() + ":" + created.getMinutes() + ":" + created.getSeconds()}</small></p><p>${msg.message}</p></div>`
+    let texte = `<div><p>${msg.name} <small>${created.toLocaleDateString() + " à " + date2char(created.getHours()) + ":" + date2char(created.getMinutes()) + ":" + date2char(created.getSeconds())}</small></p><p>${msg.message}</p></div>`
 
     document.querySelector("#messages").innerHTML += texte;
 }

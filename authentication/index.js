@@ -11,7 +11,7 @@
 
 import express from "express" // without type:module => const express = require("express")
 import http from "http"
-import nodemon from "nodemon"
+//import nodemon from "nodemon"
 import config from "./config.js"
 import apiRouter from "./router.js"
 import nunjucks from "nunjucks"
@@ -21,11 +21,35 @@ import rateLimit from "express-rate-limit"
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import './src/auth/passport.js'
+import path from "path";
+
+//region sqlite db for messages
+import Sequelize from "sequelize"
+const dbPath = path.resolve( "chat.sqlite");
+
+//
+// On se connecte à la base
+const sequelize = new Sequelize("database", "username", "password", {
+	host: "localhost",
+	dialect: "sqlite",
+	logging: false,
+
+	// Sqlite seulement
+	storage: dbPath
+});
+
+// On charge le modèle "Chat"
+import chatModel from "./client/Models/Chat.js"
+const Chat = chatModel(sequelize, Sequelize.DataTypes);
+// On effectue le chargement "réèl"
+Chat.sync();
+//endregion
 
 const limiter = rateLimit({
 	windowMs: 1000 * 60 * 15, // 15mn = 1000 * 60 * 15
 	max: 50
 })
+
 
 startMongoose()
 	.then(()=>{
@@ -42,9 +66,63 @@ function startWebServer() {
 	const server = http.createServer(app)
 	const io = new SioServer(server)
 
-	io.on("connection", (socket)=>{
-		console.log("io client Connected. id = " + socket.id)
-	})
+	//region socket
+	// On écoute l'évènement "connection" de socket.io
+
+	io.on("connection", (socket) => {
+		console.log("Une connexion s'active");
+
+		// On écoute les déconnexions
+		socket.on("disconnect", () => {
+			console.log("Un utilisateur s'est déconnecté");
+		});
+
+		// On écoute les entrées dans les salles
+		socket.on("enter_room", (room) => {
+			// On entre dans la salle demandée
+			socket.join(room);
+			console.log(socket.rooms);
+
+			// On envoie tous les messages du salon
+			Chat.findAll({
+				attributes: ["id", "name", "message", "room", "createdAt"],
+				where: {
+					room: room
+				}
+			}).then(list => {
+				socket.emit("init_messages", {messages: JSON.stringify(list)});
+			});
+		});
+
+		// On écoute les sorties dans les salles
+		socket.on("leave_room", (room) => {
+			// On entre dans la salle demandée
+			socket.leave(room);
+			console.log(socket.rooms);
+		});
+
+		// On gère le chat
+		socket.on("chat_message", (msg) => {
+			// On stocke le message dans la base
+			const message = Chat.create({
+				name: msg.name,
+				message: msg.message,
+				room: msg.room,
+				createdAt: msg.createdAt
+			}).then(() => {
+				// Le message est stocké, on le relaie à tous les utilisateurs dans le salon correspondant
+				io.in(msg.room).emit("received_message", msg);
+			}).catch(e => {
+				console.log(e);
+			});
+		});
+
+		// On écoute les messages "typing"
+		socket.on("typing", msg => {
+			socket.to(msg.room).emit("usertyping", msg);
+		})
+	});
+	//endregion
 
 	// here all we need to have html template like twig. use render in controller
 	nunjucks.configure("views", {

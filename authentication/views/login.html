@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>{{ title }}</title>
         <link rel="stylesheet" type="text/css" href="./css/main.css">
+        <script src="./commonFunction.js"></script>
     </head>
     <body>
 
@@ -41,21 +42,7 @@
             submitButton.onclick = function (){
                 login()
             }
-            /**
-             * @param promise : Promise<Response> :
-             */
-            function handleFetchLogJson(promise){
-                return promise
-                    .then(response => response.json())
-                    .then(response =>{
-                        console.log(response);
-                        return response})
-                    .catch(e=>console.error(e));
-            }
 
-            function getData(inputId){
-                return document.getElementById(inputId).value
-            }
 
             async function login(){
                 console.log("try login")
@@ -75,7 +62,7 @@
                 }
                 else{
                     document.getElementById("notification").textContent = "Connexion réussie."
-                    //@todo redirection
+                    goToUrl("/chat")
                 }
             }
         </script>

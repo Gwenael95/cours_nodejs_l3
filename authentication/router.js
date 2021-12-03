@@ -8,7 +8,8 @@ import { homeController,
 	deleteUserController,
 	userForm,
 	forgotPasswordController,
-	deleteUserControllerAdmin
+	deleteUserControllerAdmin,
+	chatController
 } from './controller/pageController.js'
 import {
 	getAllUsersController,
@@ -103,6 +104,7 @@ router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)
 
 router.patch("/admin/user", limiter, redirectNotAuth, decodeToken, patchUserController) // update partially resources
 
+router.get("/chat", limiter, redirectNotAuth, decodeToken, chatController)
 
 
 //router.get("*", limiter, defaultRedirection) // for all route not defined before, redirect to login by default

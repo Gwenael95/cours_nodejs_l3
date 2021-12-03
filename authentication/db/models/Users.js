@@ -9,7 +9,8 @@ const schema = new mongoose.Schema({
     pseudo: {type : String, unique:true},
     password: {type : String},
     mail :{type: String, unique:true, match: /.+@.+\..+/,},
-    role :{type: String, default: "user"}  // role = [user/admin]
+    role :{type: String, default: "user"},  // role = [user/admin]
+    room :{type: String, default: "Lacoding"}
     /* options timestamps will had "created at" and "updatedAt"*/
 },{
     timestamps:true,

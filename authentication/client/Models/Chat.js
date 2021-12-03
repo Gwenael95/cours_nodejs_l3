@@ -1,8 +1,8 @@
 // Contenu de ce qu'on veut mettre
 
-const Sequelize = require("sequelize");
+import Sequelize from "sequelize";
 
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     return sequelize.define("chat", {
         name: Sequelize.STRING,
         message: Sequelize.STRING,
