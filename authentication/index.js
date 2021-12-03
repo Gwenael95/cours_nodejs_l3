@@ -25,7 +25,6 @@ import path from "path";
 
 //region sqlite db for messages
 import Sequelize from "sequelize"
-const { SELECT } = require("sequelize/dist/lib/query-types");
 
 const dbPath = path.resolve( "chat.sqlite");
 
