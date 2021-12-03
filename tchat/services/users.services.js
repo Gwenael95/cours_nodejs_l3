@@ -12,7 +12,6 @@ import {ObjectId} from "mongodb";
  */
 export async function createUser(pseudo, password, mail) {
     const hashedPassword = passwordHash.generate(password);
-
     try {
         const user = await User.create({
             pseudo, password: hashedPassword, mail

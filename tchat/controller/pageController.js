@@ -42,7 +42,7 @@ function getCurrentUser(req){
  * @param res
  * @return {Promise<void|undefined>}
  */
-export async function admin(req, res){
+export async function adminCrudInterface(req, res){
 	const currentUser = getCurrentUser(req)
 	if (currentUser.isAdmin){
 		const users = await getAllUser()
@@ -96,7 +96,7 @@ export function deleteUserController(req, res) {
  * @param res
  * @return {Promise<void|undefined>}
  */
-export async function userForm(req, res){
+export async function updateUserFormController(req, res){
 	//http://127.0.0.1:8088/home/admin/61a8179615fd196e339b9b3a
 	try {
 		const currentUser = getCurrentUser(req)

@@ -45,6 +45,13 @@ export const passPortLogin = async (req, res, next) => {
     }
 }
 
+/**
+ * This middleware decode the token and allow to get user data in all routes
+ * stored in req.user
+ * @param req
+ * @param res
+ * @param next
+ */
 export const decodeToken = function(req, res, next) {
     if (req.cookies && req.cookies["jwt"]) {
         const token = req.cookies["jwt"];
@@ -59,7 +66,12 @@ export const decodeToken = function(req, res, next) {
     next()
 }
 
-
+/**
+ * This middleware redirect user to login if it doesn't have a token
+ * @param req
+ * @param res
+ * @param next
+ */
 export function redirectNotAuth(req, res, next){
     console.log("redirect not auth")
     passport.authenticate('jwt', {
@@ -68,6 +80,14 @@ export function redirectNotAuth(req, res, next){
         session: false
     })(req, res, next)
 }
+
+/**
+ * This middleware reject api call (post, delete, patch...) if it doesn't have a token
+ * without redirecting
+ * @param req
+ * @param res
+ * @param next
+ */
 export function tryAuth(req, res, next){
     passport.authenticate('jwt',{
         session:false

@@ -4,9 +4,9 @@ import {
 	logInController,
 	updateProfileController,
 	resetPasswordController,
-	admin,
+	adminCrudInterface,
 	deleteUserController,
-	userForm,
+	updateUserFormController,
 	forgotPasswordController,
 	deleteUserControllerAdmin,
 	chatController
@@ -14,16 +14,16 @@ import {
 import {
 	getAllUsersController,
 	getOneUserController,
-	patchUserController,
-	postUserController,
+	updateProfileControllerAdmin,
+	loginInController,
 	putUserController,
-	authUserPassport,
-	getUserAndSendMail,
-	getUserAndResetPassword,
+	authUserTokenPassport,
+	sendMailForgotPasswordController,
+	resetForgottenPasswordController,
 	logout,
-	getUserProfileForUpdates,
-	getUserToDeleteProfile,
-	postUserCreateController
+	updateUserProfileController,
+	deleteAccountController,
+	loginInControllerAdmin
 } from "./controller/users.controller.js"
 import rateLimit from "express-rate-limit"
 import {passPortLogin, decodeToken, redirectNotAuth, tryAuth} from "./middlewares/security.js"
@@ -58,25 +58,25 @@ router.get("/", defaultRedirection)
 
 //region route doesn't required token
 router.get("/login", limiter, logInController)
-router.post("/login", limiter,  passPortLogin, authUserPassport) // api call
+router.post("/login", limiter,  passPortLogin, authUserTokenPassport) // api call
 
 router.get("/signin", limiter, signInController)
-router.post("/signin", limiter,  postUserController) // api call
+router.post("/signin", limiter,  loginInController) // api call
 
 router.get("/forgotPassword", limiter, forgotPasswordController)
-router.post("/forgotPassword", limiter,  getUserAndSendMail)
+router.post("/forgotPassword", limiter,  sendMailForgotPasswordController)
 
 router.get("/resetPassword", limiter, resetPasswordController)
-router.patch("/resetPassword", limiter , getUserAndResetPassword)
+router.patch("/resetPassword", limiter , resetForgottenPasswordController)
 //endregion
 
 
 //region reserved to user , need confirmation with password
 router.get('/deleteUserProfile', limiter, redirectNotAuth, decodeToken, deleteUserController)
-router.delete("/deleteUserProfile", limiter, tryAuth, getUserToDeleteProfile)
+router.delete("/deleteUserProfile", limiter, tryAuth, deleteAccountController)
 
 router.get("/updateUserProfile", limiter, redirectNotAuth, decodeToken, updateProfileController)
-router.patch("/updateUserProfile", limiter, redirectNotAuth, decodeToken, getUserProfileForUpdates)
+router.patch("/updateUserProfile", limiter, redirectNotAuth, decodeToken, updateUserProfileController)
 //@todo route patch to set pseudo only
 
 //endregion
@@ -84,9 +84,9 @@ router.patch("/updateUserProfile", limiter, redirectNotAuth, decodeToken, getUse
 
 // router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
 
-router.get("/admin", limiter, redirectNotAuth, decodeToken, admin)
-router.get("/admin/:userId", limiter, redirectNotAuth, decodeToken, userForm)
-router.post("/createUser", limiter, postUserCreateController) 
+router.get("/admin", limiter, redirectNotAuth, decodeToken, adminCrudInterface)
+router.get("/admin/:userId", limiter, redirectNotAuth, decodeToken, updateUserFormController)
+router.post("/createUser", limiter, loginInControllerAdmin)
 router.get('/logout', limiter,  logout) //@todo add a button to call logout
 // espace admin
 
@@ -94,13 +94,13 @@ router.get("/user", limiter, redirectNotAuth, getAllUsersController)
 router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to get only one element
 router.get("/user/:mail", limiter, redirectNotAuth, getOneUserController)
 
-router.post("/user", limiter, redirectNotAuth,  postUserController) // api call
-router.patch("/user", limiter, redirectNotAuth, patchUserController) // update partially resources
+router.post("/user", limiter, redirectNotAuth,  loginInController) // api call
+router.patch("/user", limiter, redirectNotAuth, updateProfileControllerAdmin) // update partially resources
 router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)
 //router.put("/user", limiter, redirectNotAuth, putUserController) // replace resources
 
 
-router.patch("/admin/user", limiter, redirectNotAuth, decodeToken, patchUserController) // update partially resources
+router.patch("/admin/user", limiter, redirectNotAuth, decodeToken, updateProfileControllerAdmin) // update partially resources
 
 router.get("/chat", limiter, redirectNotAuth, decodeToken, chatController)
 

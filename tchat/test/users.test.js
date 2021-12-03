@@ -42,7 +42,7 @@ describe('User API', function () {
                 confirmPassword : "monPass1"
             })
             assert.equal(200, result.status)
-            assert.deepEqual(["pseudo", "role", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
+            assert.deepEqual(["pseudo", "room",  "role", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
         })
 
         it("should create a new user, but can't create another with same pseudo", async function (){
@@ -53,7 +53,7 @@ describe('User API', function () {
                 confirmPassword : "monPass1"
             })
             assert.equal(200, result.status)
-            assert.deepEqual(["pseudo", "role", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
+            assert.deepEqual(["pseudo","room",  "role", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
 
             const result2 = await axios.post("/signin", {
                 pseudo: "gwen",
@@ -74,7 +74,7 @@ describe('User API', function () {
                 confirmPassword : "monPass1"
             })
             assert.equal(200, result.status)
-            assert.deepEqual(["pseudo", "role", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
+            assert.deepEqual(["pseudo", "room",  "role", "mail", "_id", "createdAt", "updatedAt", "password", "__v"].sort(), Object.keys(result.data).sort() )
 
             const result2 = await axios.post("/signin", {
                 pseudo: "railas",

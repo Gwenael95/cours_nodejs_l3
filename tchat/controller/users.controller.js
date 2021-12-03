@@ -20,7 +20,7 @@ Controller functions to get the requested data from the models, create an HTML p
  * @param res
  * @return {Promise<void>}
  */
-export async function authUserPassport(req, res){
+export async function authUserTokenPassport(req, res){
     let user
 
     if (res.locals.user) {
@@ -54,6 +54,12 @@ export async function authUserPassport(req, res){
         })
 }
 
+/**
+ * Logout by deleting token, and redirect to login page
+ * @param req
+ * @param res
+ * @return {Promise<void>}
+ */
 export async function logout(req, res){
     if (req.cookies['jwt']) {
         res
@@ -66,13 +72,15 @@ export async function logout(req, res){
     }
 }
 
+
+//region forgot password
 /**
  * This controller get a user in DB and send a mail for forgotten password issue.
  * @param req
  * @param res
  * @return {Promise<*>}
  */
-export async function getUserAndSendMail(req, res){
+export async function sendMailForgotPasswordController(req, res){
     const body = req.body
     const check = checkPasswordUser(body)
     if(check !== true){
@@ -96,7 +104,7 @@ export async function getUserAndSendMail(req, res){
  * @param res
  * @return {Promise<*>}
  */
-export async function getUserAndResetPassword(req, res){
+export async function resetForgottenPasswordController(req, res){
     const body = req.body
     const check = checkResetPasswordUser(body)
     if(check !== true){
@@ -107,7 +115,9 @@ export async function getUserAndResetPassword(req, res){
     const userUpdate = await resetUserPasswordById(body.password, body.id)
     res.json(userUpdate)
 }
+//endregion
 
+//region update profile
 /**
  * This controller update an user profile.
  * It belongs to an user account, not used it when admin updating user
@@ -115,7 +125,7 @@ export async function getUserAndResetPassword(req, res){
  * @param res
  * @return {Promise<*>}
  */
-export async function getUserProfileForUpdates(req, res){
+export async function updateUserProfileController(req, res){
     const body = req.body
     const check = checkUpdateUserProfile(body)
     if(!check || body.password !==body.confirmPassword){
@@ -127,13 +137,38 @@ export async function getUserProfileForUpdates(req, res){
     res.json(user)
 }
 
+
+/**
+ * This controller is used to update a user profile as an admin.
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
+export async function updateProfileControllerAdmin(req, res){
+    if (!req.user.isAdmin){
+        return res.status(401).json({
+            errors : "unauthorized"
+        }) // bad request
+    }
+    const body = req.body
+    const check = checkUpdateUserProfileByAdmin(body)
+    if(!check || body.confirmPassword !== body.password){
+        return res.status(400).json({
+            errors : check
+        }) // bad request
+    }
+    const user = await updateUserProfileByAdmin(body.oldMail,  body.pseudo, body.password, body.mail, body.role)
+    res.json(user)
+}
+//endregion
+
 /**
  * This controller delete an user depending on his mail and password
  * @param req
  * @param res
  * @return {Promise<*>}
  */
-export async function getUserToDeleteProfile(req, res) {
+export async function deleteAccountController(req, res) {
     const body = req.body;
     const check = checkLoginUser(body);
     if (!check) {
@@ -144,6 +179,51 @@ export async function getUserToDeleteProfile(req, res) {
     const user = await deleteUserProfile(body.mail, body.password);
     res.json(user);
 }
+
+//region login
+/**
+ * This controller add a new user in DB.
+ * @param req
+ * @param res
+ * @return {Promise<*>}
+ */
+export async function loginInController(req, res){
+    const body = req.body
+    const check = checkPostUsers(body)
+    console.log("post user")
+    if(check !== true || body.password !== body.confirmPassword){
+        return res.status(400).json({
+            errors : check
+        }) // bad request
+    }
+    const user = await createUser(body.pseudo, body.password, body.mail)
+    if(user.errors){
+        return res.status(500).json({
+            errors : user,
+        }) // bad request
+    }
+    res.json(user)
+}
+
+export async function loginInControllerAdmin(req, res){
+    const body = req.body
+    const check = checkPostUsers(body)
+    console.log("post user")
+    if(check !== true || body.password !== body.confirmPassword){
+        return res.status(400).json({
+            errors : check
+        }) // bad request
+    }
+    const user = await createUserFromAdmin(body.pseudo, body.password, body.mail, body.role)
+    if(user.errors){
+        return res.status(500).json({
+            errors : user,
+        }) // bad request
+    }
+    res.json(user)
+}
+//endregion
+
 
 /**
  * This controller is used to get all user in DB (admin and user)
@@ -167,72 +247,6 @@ export async function getOneUserController(req, res){
     res.json(user)
 }
 
-/**
- * This controller add a new user in DB.
- * @param req
- * @param res
- * @return {Promise<*>}
- */
-export async function postUserController(req, res){
-    const body = req.body
-    const check = checkPostUsers(body)
-    console.log("post user")
-    if(check !== true || body.password !== body.confirmPassword){
-        return res.status(400).json({
-            errors : check
-        }) // bad request
-    }
-    const user = await createUser(body.pseudo, body.password, body.mail)
-    if(user.errors){
-        return res.status(500).json({
-            errors : user,
-        }) // bad request
-    }
-    res.json(user)
-}
-export async function postUserCreateController(req, res){
-    const body = req.body
-    const check = checkPostUsers(body)
-    console.log("post user")
-    console.log(body)
-    console.log(check)
-    console.log(config)
-    if(check !== true || body.password !== body.confirmPassword){
-        return res.status(400).json({
-            errors : check
-        }) // bad request
-    }
-    const user = await createUserFromAdmin(body.pseudo, body.password, body.mail, body.role)
-    if(user.errors){
-        return res.status(500).json({
-            errors : user,
-        }) // bad request
-    }
-    res.json(user)
-}
-
-/**
- * This controller is used to update a user profile as an admin.
- * @param req
- * @param res
- * @return {Promise<*>}
- */
-export async function patchUserController(req, res){
-    if (!req.user.isAdmin){
-        return res.status(401).json({
-            errors : "unauthorized"
-        }) // bad request
-    }
-    const body = req.body
-    const check = checkUpdateUserProfileByAdmin(body)
-    if(!check || body.confirmPassword !== body.password){
-        return res.status(400).json({
-            errors : check
-        }) // bad request
-    }
-    const user = await updateUserProfileByAdmin(body.oldMail,  body.pseudo, body.password, body.mail, body.role)
-    res.json(user)
-}
 
 export function putUserController(req, res){
 

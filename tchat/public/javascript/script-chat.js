@@ -40,7 +40,6 @@ window.onload = () => {
         socket.on('chat_message', function (message) {
             message.username = loggedUser.username;
             io.emit('chat_message', message);
-
         });
 
         // On efface le message
@@ -52,6 +51,7 @@ window.onload = () => {
         publishMessages(msg);
     })
 
+    // on retire l'utilisateur s'etant déconnecté de la liste des utilisateurs
     socket.on("remove_user", (user) => {
         console.log("receive remove user")
         console.log(user)
@@ -88,6 +88,7 @@ window.onload = () => {
         }
     });
 
+    // On met a jour la liste des utilisateurs lorsqu'on se connecte au tchat
     socket.on("init_users", data => {
         let users = JSON.parse( data.users);
         console.log("init user")
@@ -182,6 +183,7 @@ function removeUser(user){
     userDiv.parentNode.removeChild(userDiv)
 }
 //endregion
+
 
 disconnect = document.querySelector('#disconnect');
 disconnect.addEventListener('click', () => {
