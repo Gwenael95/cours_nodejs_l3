@@ -17,33 +17,39 @@
         <h1>{{ title }}</h1>
     </header>
     <main>
-        <div class="flex-fill d-flex flex-column">
-            <div class="card mb-2">
-                <form>
-                    <div>
+
+                <form class="flexCenter flexColumn form">
+                    <div class="flexBetween">
                         <label for="pseudo"> Pseudo :</label>
                         <input name="pseudo" type="text" value="{{user.pseudo}}" id="pseudo">
-
+                    </div>
                         <label for="mail"> Mail :</label>
                         <input name="mail" type="text" value="{{user.mail}}" id="mail">
-
+                    </div>
+                    <div class="flexBetween">
                         <label for="pwd"> Mot de passe :</label>
                         <input name="pwd" type="password" id="pwd">
-
-
+                    </div>
+                    <div class="flexBetween">
                         <label for="pwd"> Confirmer mot de passe :</label>
                         <input name="confirmPwd" type="password" id="confirmPwd">
-
-
+                    </div>
+                    <div class="flexBetween">
                         <input name="userId" type="hidden" id="userId" value="{{ userId }}">
                         <input name="oldMail" type="hidden" value="{{user.mail}}" id="oldMail">
+                    </div> 
+                    <div class="flexBetween">
+                        <label for="role">Choisir role:</label>
 
+                        <select name="role" id="role">
 
+                            <option value="user" selected>User</option>
+                            <option value="admin">Admin</option>
+
+                        </select>
+                    </div>    
                         <button type="button" class="btn btn-primary"> Submit</button>
-                    </div>
                 </form>
-            </div>
-        </div>
     </main>
     <footer></footer>
 

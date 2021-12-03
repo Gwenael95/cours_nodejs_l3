@@ -1,7 +1,8 @@
 import {checkPostUsers, checkLoginUser, checkPasswordUser, checkResetPasswordUser, checkUpdateUserProfile,
     checkUpdateUserProfileByAdmin} from "../validator.js";
 import {createUser, authUser, getUserByMail, resetUserPasswordById,  updateUserProfile, deleteUserProfile, getAllUser,
-    updateUserProfileByAdmin} from "../services/users.services.js";
+    updateUserProfileByAdmin,
+    createUserFromAdmin} from "../services/users.services.js";
 import {sendMailForgotPassword} from "../mailer.js";
 import jwt from 'jsonwebtoken'
 import config from "../config.js";
@@ -147,6 +148,26 @@ export async function postUserController(req, res){
     }
     res.json(user)
 }
+export async function postUserCreateController(req, res){
+    const body = req.body
+    const check = checkPostUsers(body)
+    console.log("post user")
+    console.log(body)
+    console.log(check)
+    console.log(config)
+    if(check !== true || body.password !== body.confirmPassword){
+        return res.status(400).json({
+            errors : check
+        }) // bad request
+    }
+    const user = await createUserFromAdmin(body.pseudo, body.password, body.mail, body.role)
+    if(user.errors){
+        return res.status(500).json({
+            errors : user,
+        }) // bad request
+    }
+    res.json(user)
+}
 
 export async function patchUserController(req, res){
     if (!req.user.isAdmin){
@@ -161,7 +182,7 @@ export async function patchUserController(req, res){
             errors : check
         }) // bad request
     }
-    const user = await updateUserProfileByAdmin(body.oldMail,  body.pseudo, body.password, body.mail)
+    const user = await updateUserProfileByAdmin(body.oldMail,  body.pseudo, body.password, body.mail, body.role)
     res.json(user)
 }
 

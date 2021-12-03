@@ -25,6 +25,21 @@ export async function createUser(pseudo, password, mail) {
     }
 }
 
+export async function createUserFromAdmin(pseudo, password, mail, role) {
+    const hashedPassword = passwordHash.generate(password);
+
+    try {
+        const user = await User.create({
+            pseudo, password: hashedPassword, mail, role
+        })
+        delete user.password; // ? delete user._doc.password;
+
+        return user
+    }catch(err){
+        return err
+    }
+}
+
 /**
  * Authenticate an user using his mail and then verify his password
  * @param password {String} : user's password
@@ -196,12 +211,12 @@ export async function updateUserProfile(oldMail, oldPassword , pseudo, password,
     }
 }
 
-export async function updateUserProfileByAdmin(oldMail , pseudo, password, mail) {
+export async function updateUserProfileByAdmin(oldMail , pseudo, password, mail, role) {
     try {
         const hashedPassword = passwordHash.generate(password);
         const user = await User.findOneAndUpdate({
             mail: oldMail
-        }, { pseudo: pseudo, password: hashedPassword, mail: mail })
+        }, { pseudo: pseudo, password: hashedPassword, mail: mail, role: role })
         return user;
     }catch(err){
         return err

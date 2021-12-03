@@ -21,13 +21,13 @@ function getCurrentUser(req){
  * @param req
  * @param res
  */
-export function homeController(req, res){
-	const currentUser = getCurrentUser(req)
-	res.render("home.html", {
-		title : "Acueil",
-		currentUser
-	})
-}
+// export function homeController(req, res){
+// 	const currentUser = getCurrentUser(req)
+// 	res.render("home.html", {
+// 		title : "Acueil",
+// 		currentUser
+// 	})
+// }
 
 export async function admin(req, res){
 	const currentUser = getCurrentUser(req)
@@ -40,7 +40,7 @@ export async function admin(req, res){
 			currentUser
 		})
 	}
-	res.redirect("/home")
+	res.redirect("/chat")
 }
 
 export async function deleteUserControllerAdmin(req, res){
@@ -80,7 +80,7 @@ export async function userForm(req, res){
 				userId :userId
 			})
 		}
-		res.redirect("/home")
+		res.redirect("/chat")
 	}
 	  catch(err){
 		  console.log(err, '-------------')
