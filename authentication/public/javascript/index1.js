@@ -14,3 +14,12 @@ window.addEventListener("DOMContentLoaded", () => {
     })
 
 })
+
+
+async function updateUser(id,ps,pwd,email){
+
+
+    const reponse = await axios.patch("/home/admin/"+id+"?pseudo="+ps+"&password="+pwd+"&mail="+email)
+    document.getElementById('response').innerHTML = reponse.data.res
+    
+}

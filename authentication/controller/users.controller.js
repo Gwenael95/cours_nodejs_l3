@@ -165,4 +165,7 @@ export async function patchUserController(req, res){
     res.json(user)
 }
 
-export function putUserController(req, res){}
+export function putUserController(req, res){
+
+}
+
