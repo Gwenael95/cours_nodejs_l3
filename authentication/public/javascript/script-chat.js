@@ -80,6 +80,7 @@ window.onload = () => {
     // On écoute l'évènement "init_messages"
     socket.on("init_messages", msg => {
         let data = JSON.parse(msg.messages);
+        resetMessageList()
         if(data != []){
             data.forEach(donnees => {
                 publishMessages(donnees);
@@ -129,6 +130,10 @@ function date2char(val){
     return (val<10 ? "0" + val : val)
 }
 
+
+function resetMessageList(){
+    document.querySelector("#messages").innerHTML = ""
+}
 function publishMessages(msg){
     let created = new Date(msg.createdAt);
     let texte = `<div><p>${msg.name} <small>${created.toLocaleDateString() + " à " + date2char(created.getHours()) + ":" + date2char(created.getMinutes()) + ":" + date2char(created.getSeconds())}</small></p><p>${msg.message}</p></div>`
