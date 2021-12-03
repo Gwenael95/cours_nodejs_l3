@@ -4,7 +4,10 @@ const MAIN_SALON = "Lacoding"
 let lastMessage = new Array();
 
 
-// On gère l'arrivée d'un nouvel utilisateur
+
+/**
+ * We manage new user coming to a room, with his name, mail, and createdAt
+ */
 socket.on("connect", () => {
     socket.emit("new_user", {
         pseudo: document.getElementById("name").value,
@@ -13,13 +16,13 @@ socket.on("connect", () => {
         connectionDate: new Date()
     });
 
-    // On émet un message d'entrée dans une salle
+    // Send a message that user enter a room in the powershell
     socket.emit("enter_room", MAIN_SALON);
 });
 
 
 window.onload = () => {
-    // On écoute l'évènement submit
+    
     document.querySelector("form").addEventListener("submit", (e) => {
         // On empêche l'envoi du formulaire
         e.preventDefault();
@@ -29,7 +32,7 @@ window.onload = () => {
         const room = document.querySelector("#tabs li.active").dataset.room;
         const createdAt = new Date();
 
-        // On envoie le message
+        // Send the message, the user can senc a message in the room to all the user in this room
         socket.emit("chat_message", {
             name: name.value,
             message: message.value,
@@ -77,7 +80,7 @@ window.onload = () => {
         })
     });
 
-    // On écoute l'évènement "init_messages"
+     
     socket.on("init_messages", msg => {
         let data = JSON.parse(msg.messages);
         resetMessageList()
@@ -113,7 +116,7 @@ window.onload = () => {
         });
     });
 
-    // On écoute les messages indiquant que quelqu'un tape au clavier
+    // Listen the user typing, we see an another users who write in the same chat
     socket.on("usertyping", msg => {
         const writing = document.querySelector("#writing");
 
