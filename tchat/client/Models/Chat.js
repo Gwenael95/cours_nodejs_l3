@@ -1,4 +1,4 @@
-// Contenu de ce qu'on veut mettre
+
 
 import Sequelize from "sequelize";
 

@@ -71,9 +71,10 @@ function startWebServer() {
 	const server = http.createServer(app)
 	const io = new SioServer(server)
 
-	//region socket
-	// On écoute l'évènement "connection" de socket.io
 
+	/**
+	 * Listen a connection for users
+	 */
 	io.on("connection", (socket) => {
 		console.log("Une connexion s'active");
 		let userData = null
@@ -86,6 +87,9 @@ function startWebServer() {
 				room: data.room,
 				connectionDate: data.connectionDate
 			}).then(() => {
+				/**
+				 * Receive all informations to the base and give it to users connect in the server
+				 */
 				User.findAll({
 					attributes: [ "pseudo", "mail", "room", "connectionDate"],
 					where:{room:data.room},
@@ -98,7 +102,9 @@ function startWebServer() {
 			});
 		})
 
-		// On écoute les déconnexions
+		/**
+		 * Listen disconnection to user then remove in the serve and deleted to the chat
+		 */
 		socket.on("disconnect", () => {
 			User.destroy({where:{
 				pseudo:userData.pseudo
@@ -109,13 +115,19 @@ function startWebServer() {
 			console.log("Un utilisateur s'est déconnecté");
 		});
 
-		// On écoute les entrées dans les salles
+		
+		/**
+		 * Enter on room and the user can join it
+		 */
 		socket.on("enter_room", (room) => {
 			// On entre dans la salle demandée
 			socket.join(room);
 			console.log(socket.rooms);
 
-			// On envoie tous les messages du salon
+			/**
+			 * We take name, message, room and date to receive on database, then we sort all message to one room and limit
+			 * to 10 messages.
+			 */
 			Chat.findAll({
 				attributes: ["id", "name", "message", "room", "createdAt"],
 				where: {
@@ -129,14 +141,16 @@ function startWebServer() {
 			});
 		});
 
-		// On écoute les sorties dans les salles
+		/**
+		 * User can leave a room and join another one
+		 */
 		socket.on("leave_room", (room) => {
 			// On entre dans la salle demandée
 			socket.leave(room);
 			console.log(socket.rooms);
 		});
 
-		// On gère le chat
+		// Receive message
 		socket.on("chat_message", (msg) => {
 			// On stocke le message dans la base
 			const message = Chat.create({
@@ -145,7 +159,9 @@ function startWebServer() {
 				room: msg.room,
 				createdAt: msg.createdAt
 			}).then(() => {
-				// Le message est stocké, on le relaie à tous les utilisateurs dans le salon correspondant
+				/**
+				 * Message store in dtb and broadcast to all users in the same room
+				 */
 				io.in(msg.room).emit("received_message", msg);
 
 			}).catch(e => {
@@ -153,7 +169,7 @@ function startWebServer() {
 			});
 		});
 
-		// On écoute les messages "typing"
+		// Listen "taping" message, then the user can see another user writting.
 		socket.on("typing", msg => {
 			socket.to(msg.room).emit("usertyping", msg);
 		})
