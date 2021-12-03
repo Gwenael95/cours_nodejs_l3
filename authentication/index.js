@@ -122,7 +122,7 @@ function startWebServer() {
 					room: room,
 				},
 				order: [["createdAt", "DESC"]],
-				limit : 2
+				limit : 10
 
 		}).then(list => {
 				socket.emit("init_messages", {messages: JSON.stringify(list.reverse())});

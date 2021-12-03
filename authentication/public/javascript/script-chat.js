@@ -125,15 +125,27 @@ window.onload = () => {
     });
 }
 
-
+/**
+ * This function add a one 0 before a number if < 10.
+ * Used for dates
+ * @param val {Number}
+ * @return {String}
+ */
 function date2char(val){
     return (val<10 ? "0" + val : val)
 }
 
-
+/**
+ * reset message list
+ */
 function resetMessageList(){
     document.querySelector("#messages").innerHTML = ""
 }
+
+/**
+ * add a message in message list
+ * @param msg {Object}
+ */
 function publishMessages(msg){
     let created = new Date(msg.createdAt);
     let texte = `<div><p>${msg.name} <small>${created.toLocaleDateString() + " à " + date2char(created.getHours()) + ":" + date2char(created.getMinutes()) + ":" + date2char(created.getSeconds())}</small></p><p>${msg.message}</p></div>`
@@ -141,10 +153,18 @@ function publishMessages(msg){
     document.querySelector("#messages").innerHTML += texte;
 }
 
-
+//region user
+/**
+ * Reset user list
+ */
 function resetUserList(){
     document.querySelector("#userList").innerHTML = ""
 }
+
+/**
+ * add a user in user list
+ * @param user
+ */
 function publishUser(user){
     console.log("publish user")
     console.log(user)
@@ -152,8 +172,13 @@ function publishUser(user){
     document.querySelector("#userList").innerHTML += texte;
 }
 
+/**
+ * Remove one user in the user list
+ * @param user
+ */
 function removeUser(user){
     console.log(user)
     const userDiv = document.getElementById("user-" + user.pseudo)
     userDiv.parentNode.removeChild(userDiv)
 }
+//endregion
