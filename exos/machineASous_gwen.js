@@ -1,6 +1,6 @@
 const crypto = require("crypto")
 const nbIcoDisplayed = 3
-const icons = ["♠", "♥", "♦", "♣"]
+const icons = ["♠", "♥", "♦", "♣", "A", "V", "<", ">"]
 const sep = "|"
 
 
@@ -47,3 +47,5 @@ const play1 = launchMachine();
 console.log(play1.result + "\n" + (play1.win? "you win" : "you loose"))
 
 
+const proba = 1/Math.pow(icons.length, (nbIcoDisplayed-1))*100
+console.log("Avec " + icons.length + " symboles, quelle chance (sur 100) avons-nous d’avoir " + nbIcoDisplayed + " fois le même = " + proba + "%")

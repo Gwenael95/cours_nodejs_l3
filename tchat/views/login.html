@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" type="text/css" href="./css/main.css">
+        <script src="./commonFunction.js"></script>
+    </head>
+    <body>
+
+        <header class="flexCenter">
+            <h1>{{ title }}</h1>
+        </header>
+        <main>
+
+            <div class="flexCenter txCenter" style="height: 30px;" id="notification">
+
+            </div>
+
+            <form class="flexCenter flexColumn form">
+                <div class="flexBetween">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email"  placeholder="Email" required>
+                </div>
+                <div class="flexBetween">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password" placeholder="Mot de passe" required>
+                </div>
+                <input type="button" id="submitButton" value="Se connecter">
+            </form>
+            <div class="width100 flexCenter">
+                <a href="/forgotPassword">
+                    Mot de passe oublié?
+                </a>
+            </div>
+            <div class="width100 flexCenter">
+                <a href="/signin">
+                    S'inscrire
+                </a>
+            </div>
+        </main>
+        <footer></footer>
+
+
+        <script>
+            let submitButton = document.getElementById("submitButton")
+            submitButton.onclick = function (){
+                login()
+            }
+
+
+            async function login(){
+                console.log("try login")
+                const body = JSON.stringify({
+                    mail: getData("email"),
+                    password: getData("password"),
+                })
+                const res = await handleFetchLogJson(fetch( '/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body
+                }));
+                if(!res || res.errors) {
+                    document.getElementById("notification").textContent = "Echec de la connexion. "
+                }
+                else{
+                    document.getElementById("notification").textContent = "Connexion réussie."
+                    goToUrl("/chat")
+                }
+            }
+        </script>
+    </body>
+</html>

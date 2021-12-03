@@ -1,0 +1,143 @@
+:root{
+    --neoleasy_green: #3DB580;
+    --neoleasy_old_green: #19ad95;
+    --neoleasy_old_green2: #179b8c;
+    --neoleasy_gray: #495057;
+    --white: white;
+    --main_border_radius: 100px;
+    --navBar_width: 2.8vw;
+    --navBar_height_mobile: 8vh;
+    --placeholder_color: #707070;
+    --sizeH_input: 4vh;
+
+    --shadowGrey: #d2d4dc;
+    --iplGrey : #707070;
+    --darkBlue: #031c38;
+    --headerGrey: #DBDFE5;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    background-color: white;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+body:last-child{
+    margin-block-start: auto;
+}
+
+footer{
+    margin-block-start: auto;
+    background: var(--darkBlue);
+    color: white;
+    margin-top:  3em;
+}
+footer a{
+    color: white;
+}
+
+header{
+    background: var(--darkBlue);
+    color: var(--white);
+    width: 100%;
+}
+header nav a{
+    font-weight: 400;
+    text-shadow: 2px 2px 2px var(--shadowGrey);
+    font-size: .8em;
+}
+
+html{
+    width: 100vw;
+    min-height: 100vh;
+}
+
+input:disabled {
+    cursor: not-allowed;
+}
+
+
+input[type=submit], input[type=button]{
+    cursor: pointer;
+}
+input:not([type=submit], [type=button]), textarea{
+    border : 1px solid #707070 !important;
+    border-radius: 5px;
+    text-indent: 6px;
+}
+
+
+input,textarea {
+    background: #fff;
+    color: #525865;
+    border-radius: 4px;
+    border: 1px solid #d1d1d1;
+    box-shadow: inset 0px 1px 8px rgba(0, 0, 0, 0.2);
+    font-family: inherit;
+    font-size: 1em;
+    line-height: 1.45;
+    outline: none;
+    padding: 0.6em 1.45em 0.7em;
+    -webkit-transition: .18s ease-out;
+    -moz-transition: .18s ease-out;
+    -o-transition: .18s ease-out;
+    transition: .18s ease-out;
+}
+
+input:hover ,textarea:hover{
+    box-shadow: inset 1px 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+input:focus,textarea:focus {
+    color: #4b515d;
+    border: 1px solid #B8B6B6;
+    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.01), 0px 0px 8px rgba(0, 0, 0, 0.2);
+    transform: scale3d(1.01, 1.01, 1.01);
+
+}
+
+
+label {
+    cursor: pointer;
+}
+
+/* ---------------------- */
+
+
+.flexCenter{
+    display: flex; justify-content: center; align-items: center
+}
+.flexBetween{
+    display: flex; justify-content: space-between; align-items: center
+}
+.flexColumn{
+    flex-direction: column !important;
+}
+.form > * {
+    width: 50%;
+    margin: 2px;
+}
+.form label {
+    flex: 1;
+    padding: 5px;
+
+}
+
+.txCenter{
+    text-align: center;
+}
+
+.width100{
+    width: 100%;
+}
+.width50{
+    width: 50%;
+}
+
+

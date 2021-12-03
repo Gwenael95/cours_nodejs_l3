@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./commonFunction.js"></script>
+</head>
+<body>
+    <header class="flexCenter">
+        <h1>{{ title }}</h1>
+    </header>
+    <main>
+        <form class="flexCenter flexColumn form">
+            <div class="flexBetween">
+                <label for="pseudo">Pseudo</label>
+                <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" value="{{pseudo}}">
+            </div>
+            <div class="flexBetween">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Email"  value="{{mail}}">
+            </div>
+            <div class="flexBetween">
+                <label for="currentPassword">Mot de passe</label>
+                <input type="password" id="currentPassword" name="currentPassword" placeholder="Mot de passe actuel" >
+            </div>
+            <div class="flexBetween">
+                <label for="password">Nouveau mot de passe</label>
+                <input type="password" id="password" name="password" placeholder="Nouveau mot de passe" >
+            </div>
+            <div class="flexBetween">
+                <label for="confirmPassword">Confirmez votre mot de passe</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmez mot de passe">
+            </div>
+            <div class="flexCenter txCenter" style="height: 30px;" id="notification">
+
+            </div>
+            <input type="button" id="updateProfileBtn" value="Mettre à jour">
+            <input type="button" id="cancelBtn" value="Annuler">
+        </form>
+    </main>
+    <footer></footer>
+
+
+
+    <script>
+        updateProfileBtn = document.querySelector('#updateProfileBtn');
+        updateProfileBtn.addEventListener('click', () => {
+            resetUserData();
+        })
+
+        cancelBtn = document.querySelector('#cancelBtn');
+        cancelBtn.addEventListener('click', () => {
+            goToUrl('/chat');
+        })
+
+        
+        async function resetUserData(){
+            if (getData('password') === getData('confirmPassword')) {
+                const body = JSON.stringify({
+                    mail: getData('email'),
+                    pseudo: getData('pseudo'),
+                    password: getData('password'),
+                    confirmPassword:getData('confirmPassword'),
+                    oldPassword:getData('currentPassword')
+                })
+                const res = await handleFetchLogJson(fetch( '/updateUserProfile', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body
+                }));
+                if(res.errors) {
+                    document.getElementById("notification").textContent = "Mise à jour impossible."
+                }
+                else {
+                    document.getElementById("notification").textContent = "Profil mis à jour."
+                    //@todo redirection
+                }
+            }
+            else {
+                document.getElementById("notification").textContent = "Les mots de passe ne correspondent pas."
+            }
+        }
+
+    </script>
+</body>
+</html>
