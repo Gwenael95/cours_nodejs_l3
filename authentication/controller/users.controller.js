@@ -75,6 +75,3 @@ export function putUserController(req, res){
 
 }
 
-export function deleteUserController(req, res){
-
-}

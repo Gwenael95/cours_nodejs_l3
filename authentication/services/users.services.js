@@ -66,6 +66,10 @@ export async function getAllUser() {
         return err
     }
 }
+
+///
+
+
 export async function resetUserPassword(password, mail) {
     try {
         const hashedPassword = passwordHash.generate(password);
@@ -75,6 +79,27 @@ export async function resetUserPassword(password, mail) {
         }, { password: hashedPassword}).exec()
         return user;
     }catch(err){
+        return err
+    }
+}
+
+export async function resetDataUser(pseudo, password, mail, id) {
+    try {
+        const sameUser = await User.findOne({ _id:{$nin:id},$or:[{pseudo:pseudo},{mail:mail}]})
+        if(sameUser){
+            console.log(sameUser);
+            let erreur = "error"
+            throw erreur
+        }
+        const hashedPassword = passwordHash.generate(password);
+        const user = await User.findByIdAndUpdate({
+            _id : id
+        }, { $set : { password: hashedPassword, pseudo: pseudo, mail: mail}},{new: true}).exec()
+        
+        return 'success';
+    }catch(err){
+        console.log('ici')
+        console.log(err)
         return err
     }
 }

@@ -1,4 +1,4 @@
-import { getAllUser, getUserById, UserDelete } from './services/users.services.js'
+import { resetDataUser , getAllUser, getUserById, UserDelete } from './services/users.services.js'
 
 export function homeController(req, res){
 	const currentUser = {
@@ -43,11 +43,21 @@ export async function userForm(req, res){
   }
 
   export async function userEdit(req, res){
-	  const userId = req.params.userId;
-	  const userData = req.query
-	  console.log(userId)
-	  console.log(userData)
-	  res.redirect('/home/admin')
+	try{
+		const userId = req.params.userId;
+		const userData = req.query
+		const response = await resetDataUser(userData.pseudo,userData.password,userData.mail,userId)
+		if(response === "success"){
+			res.json({ res : 'Modification reussi'})
+		}else{
+			res.json({ res : 'Un utilisateur posséde déja le meme pseudo ou mot de passe'})
+		}
+		
+	}catch(err){
+		console.log(err)	
+	}
+
+
   }
 
 export function signInController(req, res){
