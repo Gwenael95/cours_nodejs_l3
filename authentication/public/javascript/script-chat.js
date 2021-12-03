@@ -52,9 +52,12 @@ window.onload = () => {
         publishMessages(msg);
     })
 
-    socket.on("new_user_saved", (user) => {
-        publishUser(user);
+    socket.on("remove_user", (user) => {
+        console.log("receive remove user")
+        console.log(user)
+        removeUser(user);
     })
+
 
     // On écoute le clic sur les onglets
     document.querySelectorAll("#tabs li").forEach((tab) => {
@@ -86,6 +89,9 @@ window.onload = () => {
 
     socket.on("init_users", data => {
         let users = JSON.parse( data.users);
+        console.log("init user")
+        console.log(users)
+        resetUserList()
         if(users && users.length){
             users.forEach(user => {
                 publishUser(user);
@@ -130,8 +136,19 @@ function publishMessages(msg){
     document.querySelector("#messages").innerHTML += texte;
 }
 
+
+function resetUserList(){
+    document.querySelector("#userList").innerHTML = ""
+}
 function publishUser(user){
+    console.log("publish user")
     console.log(user)
     let texte = `<div id="user-${user.pseudo}" style="cursor:pointer;">${user.pseudo}</div>`
     document.querySelector("#userList").innerHTML += texte;
+}
+
+function removeUser(user){
+    console.log(user)
+    const userDiv = document.getElementById("user-" + user.pseudo)
+    userDiv.parentNode.removeChild(userDiv)
 }

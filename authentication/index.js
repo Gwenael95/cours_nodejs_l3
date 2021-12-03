@@ -76,38 +76,36 @@ function startWebServer() {
 
 	io.on("connection", (socket) => {
 		console.log("Une connexion s'active");
+		let userData = null
 
 		socket.on("new_user", (data)=>{
-			console.log("#########################################     new user")
-			console.log(data)
-
-
+			userData = data
 			const user = User.create({
 				pseudo: data.pseudo,
 				mail: data.mail,
 				room: data.room,
 				connectionDate: data.connectionDate
 			}).then(() => {
-				// L'user est stocké, on le relaie à tous les utilisateurs dans le salon correspondant
-				//io.in(msg.room).emit("received_message", msg);
+				User.findAll({
+					attributes: [ "pseudo", "mail", "room", "connectionDate"],
+					where:{room:data.room},
+					group:["pseudo"]
+				}).then(list => {
+					io.emit("init_users", {users: JSON.stringify(list)});
+				});
 			}).catch(e => {
 				console.log(e);
 			});
-
-			User.findAll({
-				attributes: [ "pseudo", "mail", "room", "connectionDate"],
-				group:["pseudo"]
-			}).then(list => {
-				socket.emit("init_users", {users: JSON.stringify(list)});
-			});
-
 		})
 
 		// On écoute les déconnexions
 		socket.on("disconnect", () => {
-			//@todo remove user from user list
-			/*User.destroy({where:{
-				}})*/
+			User.destroy({where:{
+				pseudo:userData.pseudo
+				}}).then(list=>{
+				io.emit("remove_user", userData);
+			})
+
 			console.log("Un utilisateur s'est déconnecté");
 		});
 
@@ -123,11 +121,11 @@ function startWebServer() {
 				where: {
 					room: room,
 				},
-				order: [],
+				order: [["createdAt", "DESC"]],
 				limit : 2
 
 		}).then(list => {
-				socket.emit("init_messages", {messages: JSON.stringify(list)});
+				socket.emit("init_messages", {messages: JSON.stringify(list.reverse())});
 			});
 		});
 
@@ -161,6 +159,7 @@ function startWebServer() {
 		})
 	});
 	//endregion
+
 
 	// here all we need to have html template like twig. use render in controller
 	nunjucks.configure("views", {
