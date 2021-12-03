@@ -7,7 +7,6 @@ import { homeController,
 	admin,
 	deleteUserController,
 	userForm,
-	userEdit,
 	forgotPasswordController,
 	deleteUserControllerAdmin
 } from './controller/pageController.js'
@@ -69,36 +68,33 @@ router.get("/resetPassword", limiter, resetPasswordController)
 router.patch("/resetPassword", limiter , getUserAndResetPassword)
 //endregion
 
+
+//region reserved to user , need confirmation with password
+router.get('/deleteUserProfile', limiter, redirectNotAuth, decodeToken, deleteUserController)
+router.delete("/deleteUserProfile", limiter, tryAuth, getUserToDeleteProfile)
+
 router.get("/updateUserProfile", limiter, redirectNotAuth, decodeToken, updateProfileController)
 router.patch("/updateUserProfile", limiter, redirectNotAuth, decodeToken, getUserProfileForUpdates)
 //@todo route patch to set pseudo only
 
-
-router.get('/deleteUserProfile', limiter, redirectNotAuth, decodeToken, deleteUserController)
+//endregion
 
 
 router.get("/home", limiter, redirectNotAuth, decodeToken, homeController)
-router.get("/home/admin/:userId", limiter, redirectNotAuth, decodeToken, userForm)
 router.get("/home/admin", limiter, redirectNotAuth, decodeToken, admin)
+router.get("/home/admin/:userId", limiter, redirectNotAuth, decodeToken, userForm)
 
 router.get('/logout', limiter,  logout) //@todo add a button to call logout
 // espace admin
 
-router.get("/user", limiter, redirectNotAuth, getAllUsersController)
-router.get("/user/:mail", limiter, redirectNotAuth, getOneUserController)
-
-router.get("/user/deleteUserProfile", limiter, redirectNotAuth, deleteUserController)
-router.delete("/user/deleteUserProfile", limiter, tryAuth, getUserToDeleteProfile)
 
 
-router.post("/user", postUserController)
-router.patch("/user", patchUserController) // update partially resources
 
-
-router.put("/user", putUserController) // replace resources
 
 router.get("/user", limiter, redirectNotAuth, getAllUsersController)
 router.get("/user/:id",limiter, redirectNotAuth,  getOneUserController) // to get only one element
+router.get("/user/:mail", limiter, redirectNotAuth, getOneUserController)
+
 router.post("/user", limiter, redirectNotAuth,  postUserController) // api call
 router.patch("/user", limiter, redirectNotAuth, patchUserController) // update partially resources
 router.delete("/user", limiter, redirectNotAuth, deleteUserControllerAdmin)

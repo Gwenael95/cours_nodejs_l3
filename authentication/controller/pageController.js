@@ -1,4 +1,4 @@
-import { getAllUser, getUserById, UserDelete } from '../services/users.services.js'
+import { getAllUser, getUserById, UserDeleteById } from '../services/users.services.js'
 import {ObjectId} from "mongodb";
 
 function getCurrentUser(req){
@@ -44,9 +44,9 @@ export async function admin(req, res){
 }
 
 export async function deleteUserControllerAdmin(req, res){
-  try { const user = req.params.userId;
-	console.log(user)
-    await UserDelete(user)
+  try {
+  	const userId = req.body.userId;
+    await UserDeleteById(userId)
     const users = await getAllUser()
     res.render('partial.users.html', { users })}
 	catch(err){
@@ -130,7 +130,7 @@ export function updateProfileController(req, res){
 
 	console.log(currentUser)
 	res.render("updateUserProfile.html", {
-		title : "Mettre à jour son profil",
+		title : "Mettre à jour mon profil",
 		mail: currentUser.mail,
 		pseudo: currentUser.pseudo,
 	})

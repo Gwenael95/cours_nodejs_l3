@@ -53,7 +53,7 @@
                     mail: getData('email'),
                     password: getData('password'),
                 })
-                const res = await handleFetchLogJson(fetch( '/user/deleteUserProfile', {
+                const res = await handleFetchLogJson(fetch( '/deleteUserProfile', {
                     method: 'DELETE',
                     headers: {'Content-Type': 'application/json'},
                     body

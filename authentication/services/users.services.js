@@ -1,5 +1,6 @@
 import User from "../db/models/Users.js"
 import passwordHash from "password-hash";
+import {ObjectId} from "mongodb";
 
 
 /**
@@ -134,8 +135,8 @@ export async function resetUserPasswordById(password, id) {
     }
 }
 
-export function UserDelete(user){
-    return User.findByIdAndDelete(user)
+export function UserDeleteById(user){
+    return User.findByIdAndDelete(new ObjectId(user))
 }
 
 
