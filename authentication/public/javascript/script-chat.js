@@ -1,6 +1,9 @@
 // On se connecte au serveur socket
 const socket = io();
 const MAIN_SALON = "Lacoding"
+let lastMessage = new Array();
+
+
 // On gère l'arrivée d'un nouvel utilisateur
 socket.on("connect", () => {
     socket.emit("new_user", {
@@ -32,6 +35,12 @@ window.onload = () => {
             message: message.value,
             room: room,
             createdAt: createdAt
+        });
+
+        socket.on('chat_message', function (message) {
+            message.username = loggedUser.username;
+            io.emit('chat_message', message);
+
         });
 
         // On efface le message
@@ -123,6 +132,6 @@ function publishMessages(msg){
 
 function publishUser(user){
     console.log(user)
-    let texte = `<div id="user-${user.pseudo}">${user.pseudo}</div>`
+    let texte = `<div id="user-${user.pseudo}" style="cursor:pointer;">${user.pseudo}</div>`
     document.querySelector("#userList").innerHTML += texte;
 }

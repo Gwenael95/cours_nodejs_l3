@@ -25,6 +25,8 @@ import path from "path";
 
 //region sqlite db for messages
 import Sequelize from "sequelize"
+const { SELECT } = require("sequelize/dist/lib/query-types");
+
 const dbPath = path.resolve( "chat.sqlite");
 
 //
@@ -95,6 +97,7 @@ function startWebServer() {
 
 			User.findAll({
 				attributes: [ "pseudo", "mail", "room", "connectionDate"],
+				group:["pseudo"]
 			}).then(list => {
 				socket.emit("init_users", {users: JSON.stringify(list)});
 			});
@@ -119,9 +122,12 @@ function startWebServer() {
 			Chat.findAll({
 				attributes: ["id", "name", "message", "room", "createdAt"],
 				where: {
-					room: room
-				}
-			}).then(list => {
+					room: room,
+				},
+				order: [],
+				limit : 2
+
+		}).then(list => {
 				socket.emit("init_messages", {messages: JSON.stringify(list)});
 			});
 		});
